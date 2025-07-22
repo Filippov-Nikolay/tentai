@@ -1,0 +1,11 @@
+.index__title {
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+.index__section {
+    padding: 12px 8px;
+    max-width: 705px;
+}
+.index__sub-title {
+    margin-bottom: 12px;
+}

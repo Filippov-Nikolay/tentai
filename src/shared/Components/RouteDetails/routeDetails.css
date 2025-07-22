@@ -1,0 +1,126 @@
+:root {
+    --color-border-search: #7E8588;
+    --bg-color-route-details: #ffffff;
+    --color-text: #000000;
+    --color-text-input: #000000;
+}
+.dark {
+    --bg-color-route-details: #202020;
+    --color-text: #ffffff;
+    --color-text-input: #ffffff;
+}
+
+.route-details {
+    background-color: var(--bg-color-route-details);
+}
+.route-details__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    max-height: 420px;
+    overflow-y: scroll;
+}
+.route-details__item {
+    padding: 16px;
+
+    color: var(--color-text);
+
+    border: 1px solid #E0E3E4;
+    border-radius: 10px;
+}
+.route-details__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+.route-details__btn-trash {
+    max-width: 24px;
+    max-height: 24px;
+}
+.route-details__title {
+    font-size: 16px;
+    font-weight: 600;
+}
+.route-details__main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.route-details__left-item {
+    width: 100%;
+}
+.route-details__point {
+    display: flex;
+    gap: 4px;
+
+    margin-bottom: 4px;
+
+    font-size: 16px;
+    font-weight: 400;
+}
+.route-details__point-name {
+    position: relative;
+}
+.route-details__point-name::after {
+    content: '*';
+
+    position: absolute;
+    top: -5px;
+
+    color: #D51A52;
+}
+.route-details__wrapper-input {
+    display: flex;
+    align-items: center;
+
+    /* padding-right: 10px; */
+
+    border: 1px solid var(--color-border-search);
+    border-radius: 8px;
+}
+.route-details__input {
+    padding: 8px 10px;
+
+    width: 100%;
+    
+    font-size: 16px;
+    color: var(--color-text-input);
+}
+.route-details__btn {
+    padding-right: 10px;
+
+    max-height: 20px;
+}
+.route-details__right-item {
+    width: 50%;
+}
+.route-details__btn-add-wrapper {
+    margin-top: 8px;
+
+    max-width: 222px;
+}
+.route-details__btn-add {
+    padding: 8px 28px;
+
+    width: 100%;
+
+    color: #D128A1;
+    font-weight: 600;
+    
+    border: 2px solid #D128A1;
+    border-radius: 6px;
+
+    transition: all .5s ease;
+}
+.route-details__btn-add:hover {
+    color: #ffffff;
+    background-color: #D128A1;
+}
+.route-details__btn-add--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}

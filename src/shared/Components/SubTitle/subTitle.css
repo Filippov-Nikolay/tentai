@@ -1,0 +1,12 @@
+.sub-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.sub-title__svg svg {
+    max-width: 9px;
+    max-height: 16px;
+}
+.sub-title__text {
+    font-size: 16px;
+}

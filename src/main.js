@@ -6,7 +6,9 @@ import Pages from './pages/Checkout/Index'
 
 const AppRouter = () => {
     return (
-        <Pages/>
+        <Pages
+            theme={"light"}
+        />
     )
 }
 
