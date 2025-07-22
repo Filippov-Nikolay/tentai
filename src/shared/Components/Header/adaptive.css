@@ -1,0 +1,51 @@
+@media screen and (max-width: 1900px) {
+
+}
+
+@media screen and (max-width: 1250px) {
+    .btn-categories__text {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1199px) {
+    .prizes__text {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .header__menu-burger {
+        display: block;
+    }
+    .backdrop {
+        display: block;
+    }
+    .header__right-bar {
+        position: absolute;
+        top: 0;
+        right: -100%;
+
+        flex-direction: column;
+
+        padding: 5px;
+        padding-top: 20px;
+
+        transition: right 0.3s ease;
+    }
+    .header__right-bar--active {
+        right: 0;
+
+        height: 100vh;
+
+        z-index: 2;
+    }
+}
+
+@media screen and (max-width: 767px) {
+
+}
+
+@media screen and (max-width: 575px) {
+
+}

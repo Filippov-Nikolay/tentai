@@ -1,8 +1,12 @@
 import React from "react";
 
+import './shared/css/normalize.css'
+
+import Pages from './pages/Checkout/Index'
+
 const AppRouter = () => {
     return (
-        <h1>Hello world!</h1>
+        <Pages/>
     )
 }
 

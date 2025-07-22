@@ -1,0 +1,22 @@
+:root {
+    --bg-color-burger: #000000;
+}
+.dark {
+    --bg-color-burger: #ffffff;
+}
+
+.menu-burger {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    padding: 5px;
+
+    width: 30px;
+}
+.menu-burger__span {
+    width: 100%;
+    height: 2px;
+
+    background-color: var(--bg-color-burger);
+}

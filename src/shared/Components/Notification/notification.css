@@ -1,0 +1,25 @@
+:root {
+    --color-notification-bg: #FF6600;
+}
+
+.notification {
+    position: relative;
+    padding: 0;
+}
+.notification__svg {
+}
+.notification__number {
+    position: absolute;
+    top: -10px;
+    right: -20px;
+
+    padding: 2px 3px;
+
+    font-size: 10px;
+    font-weight: bold;
+    color: #ffffff;
+
+    background-color: var(--color-notification-bg);
+    border: 2px solid #ffffff;
+    border-radius: 25px;
+}
