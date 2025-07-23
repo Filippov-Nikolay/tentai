@@ -40,6 +40,8 @@
     border-radius: 8px;
 }
 .form-input__wrapper-input--only-read {
+    max-width: min-content;
+
     border: 1px solid var(--color-border-search-only-read);
 }
 .form-input__input {
@@ -51,7 +53,8 @@
     color: var(--color-text-input);
 }
 .form-input__input[readonly] {
-  cursor: pointer;
+    width: 45px;
+    cursor: pointer;
 }
 .form-input__btn {
     padding-right: 10px;

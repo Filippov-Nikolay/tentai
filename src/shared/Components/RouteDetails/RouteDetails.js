@@ -8,6 +8,9 @@ import { MapSVG, TrashSVG } from '../../assets/svg/svgComponents'
 // COMPONENTS - FormFields
 import FormInput from '../FormFields/FormInput/FormInput';
 
+// SERVICES
+import { geocodeAddress, calculateORSMatrix } from '../../../pages/Checkout/services/apiService'
+
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export default function RouteDetails({ theme='light' }) {
@@ -36,6 +39,7 @@ export default function RouteDetails({ theme='light' }) {
             isTrash: true
         });
         setRoutes(newRoutes);
+        calculateDistances();
     };
 
     const deleteRoute = (index) => {
@@ -53,6 +57,33 @@ export default function RouteDetails({ theme='light' }) {
     };
 
     const isLimitReached = routes.length >= alphabet.length;
+
+    const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImRjZGQxMzgwZjg2MDQ2N2M4YWFmNTM2YTQwOTliZTJmIiwiaCI6Im11cm11cjY0In0=';
+    const calculateDistances = async () => {
+        try {
+            const addresses = routes.map(r => r.inputValue).filter(Boolean);
+
+            // Геокодинг адресов
+            const coords = await Promise.all(addresses.map(addr => geocodeAddress(addr, ORS_API_KEY)));
+
+            // Расчёт расстояний
+            const matrix = await calculateORSMatrix(coords, ORS_API_KEY);
+
+            for (let i = 0; i < coords.length - 1; i++) {
+                const from = alphabet[i];
+                const to = alphabet[i + 1];
+                const distance = matrix.distances[i][i + 1]; // в километрах
+
+                // From A to B: 461.97 km
+                // From B to C: 12461.81 km
+                console.log(`From ${from} to ${to}: ${distance.toFixed(2)} km`);
+            }
+
+        } catch (error) {
+            console.error("Ошибка при расчёте маршрута:", error);
+        }
+    };
+
 
     return (
         <div className={`route-details ${ currentTheme }`}>

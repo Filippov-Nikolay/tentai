@@ -12,13 +12,13 @@ export default function FormSelect({
     isRequirement = true,
     iconSVG,
     options,
-    defaultOptionIndex = 0,
+    defaultOptionIndex,
     onSelect,
     isInput = true
 }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
-    const [selectedIndex, setSelectedIndex] = useState(defaultOptionIndex);
+    const [selectedIndex, setSelectedIndex] = useState(defaultOptionIndex && '');
     const handleSelect = (index) => {
         setSelectedIndex(index);
         setInputValue(options[index]);
@@ -34,12 +34,6 @@ export default function FormSelect({
 
     return (
         <div className={`form-select ${currentTheme}`}>
-            {/* {label && <label htmlFor="" className="form-select__label">
-                <span className={`form-select__label-text 
-                    ${isRequirement && "form-select__label-text--requirement"}`}>
-                        { label }
-                </span>
-            </label>} */}
             <div className="form-select__wrapper-input">
                 <FormInput
                     label={ label }
