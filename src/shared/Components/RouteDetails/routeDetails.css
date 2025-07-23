@@ -52,15 +52,7 @@
 .route-details__left-item {
     width: 100%;
 }
-.route-details__point {
-    display: flex;
-    gap: 4px;
 
-    margin-bottom: 4px;
-
-    font-size: 16px;
-    font-weight: 400;
-}
 .route-details__point-name {
     position: relative;
 }
@@ -80,19 +72,6 @@
 
     border: 1px solid var(--color-border-search);
     border-radius: 8px;
-}
-.route-details__input {
-    padding: 8px 10px;
-
-    width: 100%;
-    
-    font-size: 16px;
-    color: var(--color-text-input);
-}
-.route-details__btn {
-    padding-right: 10px;
-
-    max-height: 20px;
 }
 .route-details__right-item {
     width: 50%;

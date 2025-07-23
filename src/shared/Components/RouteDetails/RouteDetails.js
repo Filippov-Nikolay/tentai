@@ -5,15 +5,26 @@ import './adaptive.css';
 
 import { MapSVG, TrashSVG } from '../../assets/svg/svgComponents'
 
+// COMPONENTS - FormFields
+import FormInput from '../FormFields/FormInput/FormInput';
+
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export default function RouteDetails({ theme='light' }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     const [routes, setRoutes] = useState([
-        { title: 'Download location', point: 'A', isTrash: false },
-        { title: 'Place of unloading', point: 'B', isTrash: false },
+        { title: 'Download location', point: 'A', isTrash: false, inputValue: '', hoursValue: '' },
+        { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: '' },
     ]);
+
+    const handleChange = (index, field, value) => {
+        setRoutes(prev => {
+            const newRoutes = [...prev];
+            newRoutes[index][field] = value;
+            return newRoutes;
+        });
+    };
 
     const addRoute = () => {
         const newRoutes = [...routes];
@@ -54,25 +65,21 @@ export default function RouteDetails({ theme='light' }) {
                         </div>
                         <div className="route-details__main">
                             <div className="route-details__left-item">
-                                <h3 className="route-details__point"> 
-                                    <span className="route-details__point-text">Point</span>
-                                    <span className="route-details__point-name">{ item.point }</span>
-                                </h3>
-                                <div className="route-details__wrapper-input">
-                                    <input type="text" className="route-details__input" placeholder="Thailand, Phuket, Rat Burana.." />
-                                    <button type="button" className="route-details__btn">
-                                        <MapSVG/>
-                                    </button>
-                                </div>
+                                <FormInput
+                                    label={ `Point ${item.point}` }
+                                    placeholder={ "Thailand, Phuket, Rat Burana.." }
+                                    iconSVG={ <MapSVG/> }
+                                    value={ item.inputValue }
+                                    onChange={(e) => handleChange(index, 'inputValue', e.target.value)}
+                                />
                             </div>
                             <div className="route-details__right-item">
-                                <h3 className="route-details__point">
-                                    <span className="route-details__point-text">Operating time</span>
-                                    <span className="route-details__point-name">(hour)</span>
-                                </h3>
-                                <div className="route-details__wrapper-input">
-                                    <input type="number" className="route-details__input" placeholder="Enter hour" />
-                                </div>
+                                <FormInput
+                                    label={ `Operating time (hour)` }
+                                    placeholder={ "Enter hour" }
+                                    value={ item.hoursValue }
+                                    onChange={(e) => handleChange(index, 'hoursValue', e.target.value)}
+                                />
                             </div>
                         </div>
                     </div>
