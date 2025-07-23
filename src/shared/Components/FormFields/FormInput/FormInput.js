@@ -34,7 +34,7 @@ export default function FormInput({
                     readOnly={ !isInput }
                     value={ value } onChange={onChange} 
                 />
-                <button type="button" className="form-input__btn" onClick={ !isInput ? undefined : onClick }>{ iconSVG }</button>
+                {iconSVG && <button type="button" className="form-input__btn" onClick={ !isInput ? undefined : onClick }>{ iconSVG }</button>}
             </div>
         </div>
     )

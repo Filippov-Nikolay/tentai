@@ -9,6 +9,7 @@
 .contact-info__wrapper {
     display: flex;
     justify-content: space-between;
+    gap: 15px;
 
     width: 100%;
 }
@@ -16,13 +17,13 @@
 }
 .contact-info__item--left {
     display: flex;
-    gap: 70px;
+    flex-direction: column;
+    gap: 12px;
 }
 .contact-info__info-item {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    gap: 12px;
+    gap: 70px;
 }
 .contact-info__label {
     color: #717171;
@@ -33,6 +34,8 @@
 
     color: #000000;
     font-size: 16px;
+
+    border: 1px solid rgba(0, 0, 0, 1%);
 }
 .contact-info__input--edit {
     border-radius: 5px;

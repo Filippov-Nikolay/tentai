@@ -6,8 +6,17 @@
 
 }
 
-@media screen and (max-width: 1199px) {
-
+@media screen and (max-width: 1120px) {
+    .contact-info__item--left {
+        gap: 16px;
+    }
+    .contact-info__info-item {
+        flex-direction: column;
+        gap: 4px;
+    }
+    .contact-info__btn-text {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 991px) {
@@ -20,4 +29,15 @@
 
 @media screen and (max-width: 575px) {
 
+}
+
+@media screen and (max-width: 390px) {
+    .contact-info__wrapper {
+        position: relative;
+    }
+    .contact-info__item--right {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+    }
 }

@@ -19,25 +19,27 @@ export default function ContactInfo({
                 <div className="contact-info__item contact-info__item--left">
                     <div className="contact-info__info-item">
                         <label className="contact-info__label">Full name</label>
-                        <label className="contact-info__label">Email</label>
-                        <label className="contact-info__label">Phone number</label>
-                    </div>
-                    <div className="contact-info__info-item">
                         <input 
                             className={`contact-info__input ${!isEdit ? '' : 'contact-info__input--edit'}`} 
                             readOnly={ !isEdit } 
                             type='text'
                         ></input> 
+                    </div>
+                    <div className="contact-info__info-item">
+                        <label className="contact-info__label">Email</label>
                         <input 
                             className={`contact-info__input ${!isEdit ? '' : 'contact-info__input--edit'}`} 
                             readOnly={ !isEdit } 
                             type='email'
                         ></input> 
+                    </div>
+                    <div className="contact-info__info-item">
+                        <label className="contact-info__label">Phone number</label>
                         <input 
                             className={`contact-info__input ${!isEdit ? '' : 'contact-info__input--edit'}`} 
                             readOnly={ !isEdit } 
                             type='number'
-                        ></input> 
+                        ></input>
                     </div>
                 </div>
                 <div className="contact-info__item contact-info__item--right">

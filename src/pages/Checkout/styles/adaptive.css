@@ -13,17 +13,21 @@
 @media screen and (max-width: 991px) {
 
 }
-@media screen and (max-width: 820px) {
-    .route-details__main {
+
+@media screen and (max-width: 805px) {
+    .index__wrapper {
         flex-direction: column;
     }
-    .route-details__right-item {
-        width: 100%;
+    .index__right-bar {
+        display: none;
+    }
+    .index__primary-btn {
+        display: block;
     }
 }
 
 @media screen and (max-width: 767px) {
-    
+
 }
 
 @media screen and (max-width: 575px) {

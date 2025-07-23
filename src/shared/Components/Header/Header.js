@@ -15,6 +15,7 @@ import {
 // COMPONENTS
 import Notification from '../Notification/Notification';
 import MenuBurger from '../MenuBurger/MenuBurger';
+import PrimaryBtn from '../PrimaryBtn/PrimaryBtn';
 
 export default function Header({ theme='light' }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
@@ -87,12 +88,10 @@ export default function Header({ theme='light' }) {
                             </a>
                         </div>
                         <div className="header__btn-offer">
-                            <button type="button" className="btn-offer">
-                                <span className="btn-offer__svg">
-                                    <PlusSVG/>
-                                </span>
-                                <span className="btn-offer__text">Add offer</span>
-                            </button>
+                            <PrimaryBtn
+                                iconSvg={ <PlusSVG/> }
+                                text={ "Add offer" }
+                            />
                         </div>
                     </div>
                 </div>
