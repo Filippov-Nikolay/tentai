@@ -9,3 +9,17 @@
 .index__sub-title {
     margin-bottom: 12px;
 }
+.index__about {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.index__about-wrapper {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+}
+.index__about-wrapper-element {
+    margin-bottom: auto;
+    margin-top: auto;
+}
