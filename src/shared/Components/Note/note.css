@@ -1,0 +1,22 @@
+.note {
+    width: 100%;
+}
+.note__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-bottom: 6px;
+}
+.note__title-svg {
+    max-width: 24px;
+    max-height: 24px;
+}
+.note__title-text {
+    font-weight: 400;
+}
+.note__text {
+    color: #9DA6AA;
+    font-size: 16px;
+    line-height: 24px;
+}

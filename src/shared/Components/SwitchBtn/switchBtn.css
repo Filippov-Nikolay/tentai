@@ -1,0 +1,30 @@
+.switch-btn {
+    padding: 2px;
+
+    width: 48px;
+
+    background-color: #7e8588;
+    border-radius: 40px;
+
+    transition: all .5s ease;
+}
+.switch-btn--on { 
+    background-color: #D128A1;
+}
+.switch-btn__thumb {
+    display: block;
+
+    width: 24px;
+    height: 24px;
+
+    background-color: #FFFFFF;
+    border-radius: 50%;
+
+    transform: translateX(0);
+
+    transition: all .5s ease;
+}
+
+.switch-btn--on .switch-btn__thumb {
+    transform: translateX(82%);
+}
