@@ -6,13 +6,13 @@ import './adaptive.css';
 export default function Note({
     title,
     text,
-    iconSVG
+    component
 }) {
     return (
         <div className="note">
             {title && 
                 <h4 className="note__title">
-                    <span className="note__title-svg">{ iconSVG }</span>
+                    <span className="note__title-svg">{ component }</span>
                     <span className="note__title-text">{ title }</span>
                 </h4>
             }
