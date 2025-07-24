@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './contactInfo.scss';
 import './adaptive.scss';
@@ -7,13 +7,26 @@ import { EditSVG } from '../../assets/svg/svgComponents';
 
 export default function ContactInfo({
     contact,
-    setContact
+    setContact,
+    isEditDef = true,
+    onEditChange
 }) {
-    const[isEdit, setEdit] = useState(true);
+    const[isEdit, setEdit] = useState(isEditDef);
+    const [tempContact, setTempContact] = useState(contact);
 
-    const handleSelect = () => {
-        setEdit(!isEdit);
-    }
+    useEffect(() => {
+        setTempContact(contact);
+    }, [contact]);
+
+    const handleToggleEdit = () => {
+        if (isEdit) {
+            setContact(tempContact);
+        }
+        
+        const newEditState = !isEdit;
+        setEdit(newEditState);
+        onEditChange?.(newEditState);
+    };
 
     return (
         <div className="contact-info">
@@ -51,7 +64,11 @@ export default function ContactInfo({
                     </div>
                 </div>
                 <div className="contact-info__item contact-info__item--right">
-                    <button className="contact-info__btn" onClick={ handleSelect }>
+                    <button className="contact-info__btn" onClick={ handleToggleEdit } disabled={
+                            isEdit && (
+                            !tempContact.fullName.trim() ||
+                            !tempContact.email.trim() ||
+                            !tempContact.phoneNumber.trim())}>
                         <span className="contact-info__btn-text">{!isEdit ? 'edit' : 'save'}</span>
                         <span className="contact-info__btn-svg">{ <EditSVG/> }</span>
                     </button>

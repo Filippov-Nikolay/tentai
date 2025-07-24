@@ -102,6 +102,14 @@ export default function Index({ theme='light' }) {
         localStorage.setItem('contact', JSON.stringify(contact));
     }, [contact]);
 
+    const [isEdit, setIsEdit] = useState(() => {
+        const saved = localStorage.getItem('isEdit');
+        return saved === 'true';
+    });
+    useEffect(() => {
+        localStorage.setItem('isEdit', isEdit);
+    }, [isEdit]);
+
 
     const[isOrder, setIsOrder] = useState(false);
     useEffect(() => {
@@ -341,7 +349,10 @@ export default function Index({ theme='light' }) {
                             </div>
                             <div className="index__contact-info">
                                 <ContactInfo
-                                    contact={ contact } setContact={ setContact }
+                                    contact={ contact } 
+                                    setContact={ setContact }
+                                    onEditChange={ setIsEdit }
+                                    isEditDef={ isEdit }
                                 />
                             </div>
                         </section>
