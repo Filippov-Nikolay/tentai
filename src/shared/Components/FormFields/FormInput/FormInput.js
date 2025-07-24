@@ -14,49 +14,27 @@ export default function FormInput({
     onChange,
     isInput = true,
     maxWidth,
-    errorMsg = "Invalid input",
-    pattern,
-    validateFn
+    isInvalid = false,
+    errorText = '',
+    validate,
+    pattern
 }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
     const currentMaxWidth = (maxWidth && !isInput) && maxWidth + 3;
 
-    const [error, setError] = useState(false);
-    const [errorText, setErrorText] = useState('');
-    const debounceTimeout = useRef(null);
-    const hasBlurred = useRef(false);
+    const handleChange = (e) => {
+        const newValue = e.target.value;
 
-    const handleValidation = (val) => {
-        if (validateFn) {
-            const result = validateFn(val);
-            if (result === true) {
-                setError(false);
-                setErrorText('');
-            } else if (typeof result === 'string') {
-                setError(true);
-                setErrorText(result);
-            }
+        if (pattern && !new RegExp(`^${pattern}$`).test(newValue)) {
             return;
         }
 
-        if (isRequirement && val.trim() === '') {
-            setError(true);
-            setErrorText("Это поле обязательно");
-        } else if (pattern) {
-            const regex = new RegExp(pattern);
-            if (!regex.test(val)) {
-                setError(true);
-                setErrorText(errorMsg);
-            } else {
-                setError(false);
-                setErrorText('');
-            }
-        } else {
-            setError(false);
-            setErrorText('');
+        if (validate && !validate(newValue)) {
+            return;
         }
-    };
 
+        onChange?.(e);
+    };
 
     return (
         <div className={`form-input ${currentTheme}`}>
@@ -70,7 +48,7 @@ export default function FormInput({
                 `
                     form-input__wrapper-input 
                     ${!isInput ? "form-input__wrapper-input--only-read" : ""}
-                    ${error ? 'form-input__wrapper-input--error' : ''}
+                    ${isInvalid ? 'form-input__wrapper-input--error' : ''}
                 `
                 } onClick={ !isInput ? onClick : undefined }>
                 <input 
@@ -80,18 +58,13 @@ export default function FormInput({
                     placeholder={ placeholder } 
                     className={ `form-input__input` }
                     readOnly={ !isInput }
-                    value={ value } onChange={onChange} 
+                    value={ value } onChange={ handleChange } 
                     style={{
                         maxWidth: `${currentMaxWidth}ch` || undefined,
                         minWidth: `${currentMaxWidth}ch` || undefined
                     }}
-                    onBlur={() => {
-                        hasBlurred.current = true;
-                        handleValidation(value);
-                    }}
-                    pattern={ pattern }
                 />
-                {/* {error && <p className="form-input__error-message">{ errorText }</p>} */}
+                {isInvalid  && <p className="form-input__error-message">{ errorText }</p>}
                 {iconSVG && <button type="button" className="form-input__btn" onClick={ !isInput ? undefined : onClick }>{ iconSVG }</button>}
             </div>
         </div>
