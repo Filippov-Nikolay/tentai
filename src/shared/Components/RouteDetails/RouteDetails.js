@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import './routeDetails.scss';
 import './adaptive.scss';
@@ -51,8 +51,6 @@ export default function RouteDetails({
 
         setRoutes(newRoutes);
         setShouldRecalculate(true);
-
-        console.log(routes);
     };
     React.useEffect(() => {
         if (shouldRecalculate) {
@@ -116,6 +114,26 @@ export default function RouteDetails({
         }
     };
 
+    const debounceTimer = useRef(null);
+    useEffect(() => {
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+
+        const allFilled = routes.every(route => 
+            route.inputValue.trim() !== '' && route.hoursValue.trim() !== ''
+        );
+
+        if (!allFilled) {
+            return;
+        }
+
+        debounceTimer.current = setTimeout(() => {
+            calculateDistances();
+        }, 2000);
+
+        return () => clearTimeout(debounceTimer.current);
+    }, [routes]);
 
     return (
         <div className={`route-details ${ currentTheme }`}>
