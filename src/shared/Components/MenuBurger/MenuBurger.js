@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './menuBurger.css';
-import './adaptive.css';
+import './menuBurger.scss';
+import './adaptive.scss';
 
 export default function MenuBurger({ theme='light', onClick }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';

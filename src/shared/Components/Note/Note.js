@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './note.css';
-import './adaptive.css';
+import './note.scss';
+import './adaptive.scss';
 
 export default function Note({
     title,

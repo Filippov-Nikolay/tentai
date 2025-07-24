@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './notification.css';
-import './adaptive.css';
+import './notification.scss';
+import './adaptive.scss';
 
 export default function Notification({ icon, number, onClick }) {
     return (

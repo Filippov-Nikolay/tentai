@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './order.css';
-import './adaptive.css';
+import './order.scss';
+import './adaptive.scss';
 
 import tempImg from '../../assets/img/image.png'
 

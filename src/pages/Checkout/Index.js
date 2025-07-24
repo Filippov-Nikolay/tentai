@@ -24,7 +24,7 @@ import { CalendarSVG, ArrowSVG, WalletSVG } from '../../shared/assets/svg/svgCom
 
 export default function Index({ theme='light' }) {
     const costPerKm = 10;               /* стоимость за 1 км */;
-    const costPerHourLoading = 100;       /* стоимость времени работы (загрузка/разгрузка) за 1 час */
+    const costPerHourLoading = 100;     /* стоимость времени работы (загрузка/разгрузка) за 1 час */
     const commissionRate = 0.3;         /* 30% комиссия */
     const forwardingServiceRate = 0.2;  /* 20% экспедиторские услуги от стоимости пути */
 

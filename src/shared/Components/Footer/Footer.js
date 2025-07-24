@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './footer.css';
-import './adaptive.css';
+import './footer.scss';
+import './adaptive.scss';
 
 import logo from '../../assets/img/Logo-main.png'
 

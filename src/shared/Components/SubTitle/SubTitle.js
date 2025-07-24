@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './subTitle.css';
-import './adaptive.css';
+import './subTitle.scss';
+import './adaptive.scss';
 
 import { LogoForTitleSVG } from '../../assets/svg/svgComponents'
 

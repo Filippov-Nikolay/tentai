@@ -1,6 +1,6 @@
 import React from "react";
 
-import './shared/css/normalize.css'
+import './shared/css/normalize.scss'
 
 import Pages from './pages/Checkout/Index'
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import './checkboxBtn.css';
-import './adaptive.css';
+import './checkboxBtn.scss';
+import './adaptive.scss';
 
 export default function CheckboxBtn({
     onChange

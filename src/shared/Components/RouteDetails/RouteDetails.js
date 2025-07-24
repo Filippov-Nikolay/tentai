@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import './routeDetails.css';
-import './adaptive.css';
+import './routeDetails.scss';
+import './adaptive.scss';
 
 import { MapSVG, TrashSVG } from '../../assets/svg/svgComponents'
 

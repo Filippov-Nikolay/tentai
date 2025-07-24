@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './formTextArea.css';
-import './adaptive.css';
+import './formTextArea.scss';
+import './adaptive.scss';
 
 export default function FormTextArea({
     theme = "light",

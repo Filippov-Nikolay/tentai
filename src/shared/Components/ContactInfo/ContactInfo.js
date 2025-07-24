@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import './contactInfo.css';
-import './adaptive.css';
+import './contactInfo.scss';
+import './adaptive.scss';
 
 import { EditSVG } from '../../assets/svg/svgComponents';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './primaryBtn.css';
-import './adaptive.css';
+import './primaryBtn.scss';
+import './adaptive.scss';
 
 export default function PrimaryBtn({
     iconSvg,

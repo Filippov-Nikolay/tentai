@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import './header.css';
-import './adaptive.css';
+import './header.scss';
+import './adaptive.scss';
 
 import logo from '../../assets/img/Logo.png'
 import avatar from '../../assets/img/avatar.jpg'

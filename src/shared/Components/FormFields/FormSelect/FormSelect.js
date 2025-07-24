@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import './formSelect.css';
-import './adaptive.css';
+import './formSelect.scss';
+import './adaptive.scss';
 
 import FormInput from '../FormInput/FormInput';
 

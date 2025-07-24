@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 
-import './formInput.css';
-import './adaptive.css';
+import './formInput.scss';
+import './adaptive.scss';
 
 export default function FormInput({ 
     theme = "light",

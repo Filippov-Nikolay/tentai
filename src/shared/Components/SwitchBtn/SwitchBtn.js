@@ -1,7 +1,7 @@
 import React from 'react';
 
-import './switchBtn.css';
-import './adaptive.css';
+import './switchBtn.scss';
+import './adaptive.scss';
 
 export default function SwitchBtn({
     onSwitch,
