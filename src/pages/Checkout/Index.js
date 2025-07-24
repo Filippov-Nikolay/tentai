@@ -34,7 +34,10 @@ export default function Index({ theme='light' }) {
     // ROUTE
     const [currentRoutes, setCurrentRoutes] = useState(() => {
         const saved = localStorage.getItem('currentRoutes');
-        return saved ? JSON.parse(saved) : [];
+        return saved ? JSON.parse(saved) : [
+            { title: 'Download location', point: 'A', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
+            { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
+        ];
     });
     useEffect(() => {
         localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
@@ -200,9 +203,17 @@ export default function Index({ theme='light' }) {
     const totalSum = distanceCost + loadingCost;
 
     let firstPoint = currentRoutes[0]?.point;
-    let lastPoint = currentRoutes[currentRoutes.length - 1]?.point;
     let nameFirstPoint = currentRoutes[0]?.inputValue;
-    let nameLastPoint = currentRoutes[currentRoutes.length - 1]?.inputValue;
+
+    let filledLast = [...currentRoutes].reverse().find(route =>
+        route.inputValue?.trim() && route.hoursValue?.trim()
+    );
+
+    let lastPoint = filledLast?.point;
+    let nameLastPoint = filledLast?.inputValue;
+
+    
+    
 
     return (
         <>
@@ -230,6 +241,7 @@ export default function Index({ theme='light' }) {
                                 <RouteDetails
                                     theme={ currentTheme }
                                     onRoutesChange={ setCurrentRoutes }
+                                    routesData={ currentRoutes }
                                 />
                             </div>
                         </section>

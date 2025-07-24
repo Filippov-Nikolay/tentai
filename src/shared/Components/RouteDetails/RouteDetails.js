@@ -13,15 +13,19 @@ import { geocodeAddress, calculateORSMatrix } from '../../../pages/Checkout/serv
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-export default function RouteDetails({ theme='light', onRoutesChange }) {
+export default function RouteDetails({ 
+    theme='light', 
+    onRoutesChange,
+    routesData = []
+}) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
-    const [routes, setRoutes] = useState([
-        { title: 'Download location', point: 'A', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
-        { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
-    ]);
-
+    const [routes, setRoutes] = useState(routesData);
     const [shouldRecalculate, setShouldRecalculate] = useState(false);
+
+    React.useEffect(() => {
+        setRoutes(routesData);
+    }, [routesData]);
 
     const handleChange = (index, field, value) => {
         setRoutes(prev => {
