@@ -1,5 +1,17 @@
+:root {
+    --bg-color-note: #ffffff;
+    --color-text-note: #000000;
+    --color-svg-note: #000000;
+}
+.dark {
+    --bg-color-note: #202020;
+    --color-text-note: #ffffff;
+    --color-svg-note: #ffffff;
+}
+
 .note {
     width: 100%;
+    background-color: var(--bg-color-note);
 }
 .note__title {
     display: flex;
@@ -7,10 +19,15 @@
     gap: 6px;
 
     margin-bottom: 6px;
+
+    color: var(--color-text-note);
 }
 .note__title-svg {
     max-width: 24px;
     max-height: 24px;
+}
+.note__title-svg path {
+    fill: var(--color-svg-note);
 }
 .note__title-text {
     font-weight: 400;

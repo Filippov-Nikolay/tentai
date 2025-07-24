@@ -12,6 +12,8 @@ import PrimaryBtn from '../PrimaryBtn/PrimaryBtn';
 import CheckboxBtn from '../CheckboxBtn/CheckboxBtn';
 
 export default function Order({
+    theme = "light",
+
     srcImg = tempImg,
     title = "",
     currency = "",
@@ -33,8 +35,10 @@ export default function Order({
     isDisabled = false,
     onClick,
 }) {
+    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+
     return (
-        <div className="order">
+        <div className={`order ${currentTheme}`}>
             <div className="order__top">
                 <div className="order__top-wrapper">
                     <div className="order__img-wrapper">

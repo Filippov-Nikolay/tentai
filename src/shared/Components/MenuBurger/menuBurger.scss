@@ -1,8 +1,10 @@
 :root {
-    --bg-color-burger: #000000;
+    --bg-color-burger: #ffffff;
+    --color-element-burger: #000000;
 }
 .dark {
-    --bg-color-burger: #ffffff;
+    --bg-color-burger: #202020;
+    --color-element-burger: #ffffff;
 }
 
 .menu-burger {
@@ -13,10 +15,12 @@
     padding: 5px;
 
     width: 30px;
+
+    background-color: var(--bg-color-burger);
 }
 .menu-burger__span {
     width: 100%;
     height: 2px;
 
-    background-color: var(--bg-color-burger);
+    background-color: var(--color-element-burger);
 }

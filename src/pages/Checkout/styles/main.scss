@@ -1,6 +1,24 @@
+:root {
+    --bg-color-left-bar: #ffffff;
+    --color-sub-title: #000000;
+    --color-text: #000000;
+    --arrow-back-svg: #000000; 
+    --color-btn-arrow: #000000;
+    --color-index-title: #000000;
+}
+.dark {
+    --bg-color-left-bar: #202020;
+    --color-sub-title: #ffffff;
+    --color-text: #ffffff;
+    --arrow-back-svg: #ffffff; 
+    --color-btn-arrow: #ffffff;
+    --color-index-title: #ffffff;
+}
 .index__title {
     margin-top: 24px;
     margin-bottom: 16px;
+
+    color: var(--color-index-title);
 }
 .index__arrow-back {
     display: none;
@@ -8,6 +26,8 @@
     gap: 5px;
 
     padding: 5px;
+
+    color: var(--color-btn-arrow);
 
     border: 1px solid #E0E3E4;
     border-radius: 8px;
@@ -19,6 +39,9 @@
     display: flex;
     
     transform: rotate(90deg);
+}
+.index__arrow-back-svg path {
+    fill: var(--arrow-back-svg);
 }
 .index__arrow-back-text {
     font-size: 16px;
@@ -42,6 +65,8 @@
     width: 100%;
 
     box-shadow: 1px 3px 10px rgba(0, 0, 0, 7%);
+
+    background-color: var(--bg-color-left-bar);
 }
 .index__right-bar {
     padding: 12px 8px;
@@ -74,11 +99,16 @@
 }
 .index__sub-title {
     margin-bottom: 8px;
+
+    color: var(--color-sub-title);
 }
 .index__about {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+.index__about-item {
+    color: var(--color-text);
 }
 .index__about-span {
     display: block;
@@ -102,6 +132,9 @@
 }
 .index__primary-btn {
     display: none;
+}
+.index__right-bar {
+    background-color: var(--bg-color-left-bar);
 }
 .index__right-bar--show {
     display: block;

@@ -17,13 +17,10 @@ import Notification from '../Notification/Notification';
 import MenuBurger from '../MenuBurger/MenuBurger';
 import PrimaryBtn from '../PrimaryBtn/PrimaryBtn';
 
-export default function Header({ theme='light' }) {
+export default function Header({ theme='light', onChange, value }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleMenu = () => {
-        setIsOpen(prev => !prev);
-    };
+    let isOpen = value;
 
     return (
         <header className={`header ${currentTheme}`}>
@@ -55,10 +52,10 @@ export default function Header({ theme='light' }) {
                     <div className="header__menu-burger">
                         <MenuBurger
                             theme= { currentTheme }
-                            onClick={ toggleMenu }
+                            onClick={ onChange }
                         />
                     </div>
-                    {isOpen && <div className="backdrop" onClick={() => setIsOpen(false)} />}
+                    
                     <div className={`header__right-bar ${isOpen ? "header__right-bar--active" : ""}`}>
                         <div className="header__prizes">
                             <a href="#" className="prizes">

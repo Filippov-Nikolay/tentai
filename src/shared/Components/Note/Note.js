@@ -4,12 +4,15 @@ import './note.scss';
 import './adaptive.scss';
 
 export default function Note({
+    theme = "light",
     title,
     text,
     component
 }) {
+    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+
     return (
-        <div className="note">
+        <div className={`note ${currentTheme}`}>
             {title && 
                 <h4 className="note__title">
                     <span className="note__title-svg">{ component }</span>

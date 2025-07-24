@@ -16,10 +16,12 @@ import {
 import FormSelect from '../FormFields/FormSelect/FormSelect';
 
 export default function Footer({
-
+    theme = "light"
 }) {
+    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+
     return (
-        <footer className="footer">
+        <footer className={`footer ${currentTheme}`}>
             <div className="container">
                 <div className="footer__wrapper-content">
                     <div className="footer__left-content">

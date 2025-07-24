@@ -1,3 +1,10 @@
+:root {
+    --color-text-contact: #000000;
+}
+.dark {
+    --color-text-contact: #ffffff;
+}
+
 .contact-info {
     padding: 16px;
 
@@ -32,7 +39,7 @@
 .contact-info__input {
     padding: 2px;
 
-    color: #000000;
+    color: var(--color-text-contact);
     font-size: 16px;
 
     border: 1px solid rgba(0, 0, 0, 1%);

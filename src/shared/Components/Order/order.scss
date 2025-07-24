@@ -1,5 +1,18 @@
+:root {
+    --bg-color-order: #ffffff;
+    --color-title-order: #002F34;
+    --color-price-value-order: #000000;
+    --color-currency-order: #000000;
+}
+.dark {
+    --bg-color-order: #202020;
+    --color-title-order: #66cdd8;
+    --color-price-value-order: #ffffff;
+    --color-currency-order: #ffffff;
+}
+
 .order {
-    background-color: #ffffff;
+    background-color: var(--bg-color-order);
 }
 .order__top {
     display: flex;
@@ -56,7 +69,7 @@
 .order__title {
     margin-bottom: 8px;
 
-    color: #002F34;
+    color: var(--color-title-order);
     font-size: 16px;
 }
 .order__payment {
@@ -71,6 +84,9 @@
 }
 .order__payment-currency {
     text-transform: uppercase;
+}
+.order__list-currency {
+    color: var(--color-currency-order);
 }
 .order__right-item-bottom {
     display: flex;
@@ -158,12 +174,17 @@
 .order__price {
 }
 .order__price-value {
+    color: var(--color-price-value-order);
 }
-.order__list-item-wrapper--total {
+.order__price-name--total {
     color: #FF6600;
     font-weight: 600;
 }
-.order__price-name--total {
+.order__price-value--total {
+    color: #FF6600;
+    font-weight: 600;
+}
+.order__list-currency--total {
     color: #FF6600;
     font-weight: 600;
 }

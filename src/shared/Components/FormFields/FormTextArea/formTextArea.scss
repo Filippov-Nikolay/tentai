@@ -1,3 +1,12 @@
+:root {
+    --bg-text-area: #ffffff;
+    --color-text-area: #000000;
+}
+.dark {
+    --bg-text-area: #202020;
+    --color-text-area: #ffffff;
+}
+
 .form-text-area {
     width: 100%;
 }
@@ -10,13 +19,19 @@
     max-height: 250px;
     min-height: 100px;
 
+    color: var(--color-text-area);
     font-size: 16px;
 
     border-radius: 8px;
+
+    background-color: var(--bg-text-area);
+
+    overflow: clip;
 }
 .form-text-area__wrapper-count-character {
     display: flex;
     justify-content: end;
+    background-color: var(--bg-text-area)
 }
 .form-text-area__count-character {
     font-size: 12px;

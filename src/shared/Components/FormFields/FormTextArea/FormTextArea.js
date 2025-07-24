@@ -10,9 +10,10 @@ export default function FormTextArea({
     maxLength = 4000,
 }) {
     let currentLength = value.length;
+    const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     return (
-        <div className="form-text-area">
+        <div className={`form-text-area ${currentTheme}`}>
             <textarea 
                 name="" 
                 id="" 

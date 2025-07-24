@@ -226,19 +226,6 @@ export default function Index({ theme='light' }) {
     const handleChangeShowLeftBar = () => {
         setIsShowRightBar(!isShowRightBar);
     }
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth > 805) {
-                setIsShowRightBar(false);
-            }
-        };
-
-        handleResize();
-
-        window.addEventListener('resize', handleResize);
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     // Стоимость за экспедиторские услуги
     const forwardingServicesCost = Math.round(distanceCost * forwardingServiceRate * 100) / 100;
@@ -259,21 +246,49 @@ export default function Index({ theme='light' }) {
     let lastPoint = filledLast?.point;
     let nameLastPoint = filledLast?.inputValue;
 
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);        
+    };
+    useEffect(() => {
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }, [isOpen]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 805) {
+                setIsShowRightBar(false);
+            }
+            if (window.innerWidth > 990) {
+                setIsOpen(false);
+            }
+        };
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <>
             <Header 
                 theme={ currentTheme }
+                onChange={ toggleMenu }
+                value={ isOpen }
             />
+            {isOpen && <div className="backdrop" onClick={() => setIsOpen(false)} />}
             <div className="container">
                 <div className="index__wrapper-title">
-                    <h1 className="index__title">Checkout</h1>
-                    <button className={`index__arrow-back ${isShowRightBar ? "index__arrow-back--show" : ""}`} onClick={ handleChangeShowLeftBar }>
+                    <h1 className={`index__title ${currentTheme}`}>Checkout</h1>
+                    <button className={`index__arrow-back ${currentTheme} ${isShowRightBar ? "index__arrow-back--show" : ""}`} onClick={ handleChangeShowLeftBar }>
                         <span className="index__arrow-back-svg"><ArrowSVG></ArrowSVG></span>
                         <span className="index__arrow-back-text">Back</span>
                     </button>
                 </div>
                 <div className="index__wrapper">
-                    <div className={`index__left-bar ${isShowRightBar ? "index__left-bar--hidden" : ""}`}>
+                    <div className={`index__left-bar ${theme} ${isShowRightBar ? "index__left-bar--hidden" : ""}`}>
                         {/* ROUTE */}
                         <section className="index__section">
                             <div className="index__sub-title">
@@ -397,6 +412,7 @@ export default function Index({ theme='light' }) {
                             </div>
                             <div className="index__comment">
                                     <FormTextArea
+                                        theme={ currentTheme }
                                         onChange={ (e) => setInputComment(e.target.value) }
                                         value={ inputComment }
                                     />
@@ -429,6 +445,7 @@ export default function Index({ theme='light' }) {
                             </div>
                             <div className="index__payment">
                                 <Note
+                                    theme={ currentTheme }
                                     component={ <WalletSVG/> }
                                     title={ "Payment on receipt" }
                                     text={ "Avoid online transactions and pay only when you receive your order. This will guarantee your financial security and avoid any risks associated with electronic payments." }
@@ -468,14 +485,16 @@ export default function Index({ theme='light' }) {
                     <div className={`index__primary-btn ${isShowRightBar ? "index__primary-btn--hidden" : ""}`}>
                         <PrimaryBtn
                             text={ "Continue" }
-                            isDisabled={ isOrder }
+                            // isDisabled={ isOrder }
                             onClick={ handleChangeShowLeftBar }
                         />
                     </div>
                 </div>
             </div>
             <div className={`index__footer ${isShowRightBar ? "index__footer--hidden" : ""}`}>
-                <Footer/>
+                <Footer 
+                    theme={ currentTheme } 
+                />
             </div>
         </>
     )
