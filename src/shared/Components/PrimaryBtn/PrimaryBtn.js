@@ -10,7 +10,7 @@ export default function PrimaryBtn({
     onClick
 }) {
     return (
-        <button type="button" className={`primary-btn ${isDisabled ? 'primary-btn--disabled' : ''}`} onClick={ onClick }>
+        <button type="button" className={`primary-btn ${isDisabled ? 'primary-btn--disabled' : ''}`} onClick={ onClick } disabled={ isDisabled }>
             {iconSvg && 
                 <span className="primary-btn__svg">
                     {iconSvg}

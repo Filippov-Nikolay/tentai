@@ -33,6 +33,8 @@
     color: #D51A52;
 }
 .form-input__wrapper-input {
+    position: relative;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -58,8 +60,23 @@
     /* width: 45px; */
     cursor: pointer;
 }
+.form-input__wrapper-input--error {
+    border-color: red;
+}
 .form-input__btn {
     padding-right: 10px;
 
     max-height: 20px;
+}
+.form-input__error-message {
+    position: absolute;
+    left: 0;
+    bottom: -25px;
+    z-index: 2;
+
+    padding: 5px 10px;
+
+    background-color: #ffffff;
+    border: 1px solid red;
+    border-radius: 8px;
 }

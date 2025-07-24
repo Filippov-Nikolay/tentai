@@ -13,13 +13,15 @@ import { geocodeAddress, calculateORSMatrix } from '../../../pages/Checkout/serv
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-export default function RouteDetails({ theme='light' }) {
+export default function RouteDetails({ theme='light', onRoutesChange }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     const [routes, setRoutes] = useState([
-        { title: 'Download location', point: 'A', isTrash: false, inputValue: '', hoursValue: '' },
-        { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: '' },
+        { title: 'Download location', point: 'A', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
+        { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
     ]);
+
+    const [shouldRecalculate, setShouldRecalculate] = useState(false);
 
     const handleChange = (index, field, value) => {
         setRoutes(prev => {
@@ -33,14 +35,28 @@ export default function RouteDetails({ theme='light' }) {
         const newRoutes = [...routes];
         const nextIndex = newRoutes.length;
         const nextLetter = alphabet[nextIndex];
+
         newRoutes.push({
             title: `Custom point`,
             point: nextLetter,
-            isTrash: true
+            isTrash: true,
+            inputValue: '',
+            hoursValue: '',
+            distanceToNext: null
         });
+
         setRoutes(newRoutes);
-        calculateDistances();
+        setShouldRecalculate(true);
+
+        console.log(routes);
     };
+    React.useEffect(() => {
+        if (shouldRecalculate) {
+            calculateDistances();
+            setShouldRecalculate(false);
+        }
+    }, [shouldRecalculate]);
+
 
     const deleteRoute = (index) => {
         const baseRoutes = routes.slice(0, 2);
@@ -50,35 +66,46 @@ export default function RouteDetails({ theme='light' }) {
 
         const reindexedExtras = newExtras.map((item, idx) => ({
             ...item,
-            point: alphabet[idx + 2], // начиная с C
+            point: alphabet[idx + 2],
         }));
 
-        setRoutes([...baseRoutes, ...reindexedExtras]);
+        const updatedRoutes = [...baseRoutes, ...reindexedExtras];
+        setRoutes(updatedRoutes);
+        setShouldRecalculate(true);
     };
+
+    React.useEffect(() => {
+        if (shouldRecalculate) {
+            calculateDistances();
+            setShouldRecalculate(false);
+        }
+    }, [shouldRecalculate]);
 
     const isLimitReached = routes.length >= alphabet.length;
 
-    const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImRjZGQxMzgwZjg2MDQ2N2M4YWFmNTM2YTQwOTliZTJmIiwiaCI6Im11cm11cjY0In0=';
+    const ORS_API_KEY = process.env.API_KEY_ROUTE;
     const calculateDistances = async () => {
-        try {
-            const addresses = routes.map(r => r.inputValue).filter(Boolean);
+    try {
+        const addresses = routes.map(r => r.inputValue).filter(Boolean);
 
-            // Геокодинг адресов
-            const coords = await Promise.all(addresses.map(addr => geocodeAddress(addr, ORS_API_KEY)));
+        const coords = await Promise.all(addresses.map(addr => geocodeAddress(addr, ORS_API_KEY)));
 
-            // Расчёт расстояний
-            const matrix = await calculateORSMatrix(coords, ORS_API_KEY);
+        const matrix = await calculateORSMatrix(coords, ORS_API_KEY);
 
-            for (let i = 0; i < coords.length - 1; i++) {
-                const from = alphabet[i];
-                const to = alphabet[i + 1];
-                const distance = matrix.distances[i][i + 1]; // в километрах
+        const updatedRoutes = [...routes];
 
-                // From A to B: 461.97 km
-                // From B to C: 12461.81 km
-                console.log(`From ${from} to ${to}: ${distance.toFixed(2)} km`);
-            }
+        for (let i = 0; i < coords.length - 1; i++) {
+            const distance = matrix.distances[i][i + 1];
+            updatedRoutes[i].distanceToNext = distance.toFixed(2); // сохраняем как строку, чтобы было удобно отобразить
+        }
 
+        // Последней точке обнуляем distanceToNext
+        if (updatedRoutes.length > 0) {
+            updatedRoutes[updatedRoutes.length - 1].distanceToNext = null;
+        }
+
+        setRoutes(updatedRoutes);
+        onRoutesChange?.(updatedRoutes);
         } catch (error) {
             console.error("Ошибка при расчёте маршрута:", error);
         }

@@ -11,7 +11,6 @@
 }
 
 @media screen and (max-width: 991px) {
-
 }
 
 @media screen and (max-width: 805px) {
@@ -21,8 +20,15 @@
     .index__right-bar {
         display: none;
     }
+    .index__right-bar--show {
+        display: block;
+        max-width: none;
+    }
     .index__primary-btn {
         display: block;
+    }
+    .index__primary-btn--hidden {
+        display: none;
     }
 }
 
@@ -31,5 +37,11 @@
 }
 
 @media screen and (max-width: 575px) {
-
+    .index__right-bar--show .order__list-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .index__right-bar--show .order__list {
+        gap: 10px;
+    }
 }

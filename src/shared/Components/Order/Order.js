@@ -31,7 +31,7 @@ export default function Order({
     totalPrice = 0,
 
     isDisabled = false,
-    onClick
+    onClick,
 }) {
     return (
         <div className="order">
