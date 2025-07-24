@@ -4,7 +4,7 @@
 
 ```bash
 1. Клонируйте репозиторий и перейдите в папку проекта:
-    git clone <https://github.com/Filippov-Nikolay/tentai>
+    git clone https://github.com/Filippov-Nikolay/tentai
     cd tentai
 
 2. Установите все зависимости:
