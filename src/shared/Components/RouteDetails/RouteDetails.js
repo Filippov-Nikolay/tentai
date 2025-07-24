@@ -134,6 +134,7 @@ export default function RouteDetails({
                                     iconSVG={ <MapSVG/> }
                                     value={ item.inputValue }
                                     onChange={(e) => handleChange(index, 'inputValue', e.target.value)}
+                                    pattern="[A-Za-zА-Яа-я]*"
                                 />
                             </div>
                             <div className="route-details__right-item">
@@ -142,6 +143,7 @@ export default function RouteDetails({
                                     placeholder={ "Enter hour" }
                                     value={ item.hoursValue }
                                     onChange={(e) => handleChange(index, 'hoursValue', e.target.value)}
+                                    pattern="\d*"
                                 />
                             </div>
                         </div>
