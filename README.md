@@ -2,7 +2,7 @@
 
 1. Клонируйте репозиторий и перейдите в папку проекта:
     git clone <https://github.com/Filippov-Nikolay/tentai>
-    cd <tentai>
+    cd tentai
 
 2. Установите все зависимости:
     npm install
