@@ -114,6 +114,47 @@ export default function Index({ theme='light' }) {
     }, [isEdit]);
 
 
+    const validateDate = (val) => {
+        if (val === '') return true;
+
+        const dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
+        if (!dateRegex.test(val)) return false;
+
+        const [d, m, y] = val.split('.').map(Number);
+        const inputDate = new Date(y, m - 1, d);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (
+            inputDate.getDate() !== d ||
+            inputDate.getMonth() !== m - 1 ||
+            inputDate.getFullYear() !== y
+        ) { return false; }
+
+        return inputDate >= today;
+    };
+
+    const [isInvalid, setIsInvalid] = useState(false);
+    const handelSetDateOfUpload = (e) => {
+        const val = e.target.value;
+        setDateOfUpload(val);
+        setIsInvalid(!validateDate(val));
+    };
+
+
+    const validateTime = (val) => {
+        if (val === '') return true;
+        const timeRegex = /^([01]?\d|2[0-3]):([0-5]?\d)$/;
+        return timeRegex.test(val);
+    };
+
+    const [isTimeInvalid, setIsTimeInvalid] = useState(false);
+    const handleSetTimeOfArrival = (e) => {
+        const val = e.target.value;
+        setTimeOfArrival(val);
+        setIsTimeInvalid(!validateTime(val));
+    };
+
     const[isOrder, setIsOrder] = useState(false);
     useEffect(() => {
         if (
@@ -172,7 +213,6 @@ export default function Index({ theme='light' }) {
 
     const handleChange = () => {
         console.log(result);
-        console.log(`${distanceCost} ${loadingCost} ${hoursWorked}`)
     }
 
     const[isShowRightBar, setIsShowRightBar] = useState(false);
@@ -211,9 +251,6 @@ export default function Index({ theme='light' }) {
 
     let lastPoint = filledLast?.point;
     let nameLastPoint = filledLast?.inputValue;
-
-    
-    
 
     return (
         <>
@@ -257,27 +294,34 @@ export default function Index({ theme='light' }) {
                                 <div className="index__about-item">
                                     <FormInput
                                         label={ "Date of upload" }
-                                        placeholder={ "Thailand, Phuket, Rat Burana.." }
+                                        placeholder={ "dd.mm.yyyy" }
                                         iconSVG={ <CalendarSVG/> }
                                         value={ dateOfUpload }
-                                        onChange={ (e) => setDateOfUpload(e.target.value) }
+                                        onChange={ handelSetDateOfUpload }
+                                        pattern="\d{0,2}(\.\d{0,2}(\.\d{0,4})?)?"
+                                        isInvalid={ isInvalid }
+                                        errorText='Incorrect date'
                                     />
                                 </div>
                                 <div className="index__about-item">
                                     <FormInput
                                         label={ "Time of arrival" }
-                                        placeholder={ "Enter hour" }
+                                        placeholder={ "00:00" }
                                         value={ timeOfArrival }
-                                        onChange={ (e) => setTimeOfArrival(e.target.value) }
+                                        onChange={ handleSetTimeOfArrival }
+                                        isInvalid={ isTimeInvalid }
+                                        pattern="\d{0,2}(\:\d{0,2}?)?"
+                                        errorText='Incorrect time'
                                     />
                                 </div>
                                 <div className="index__about-item">
                                     <FormInput
                                         label={ "Cargo weight (kg)" }
-                                        placeholder={ "Placeholder" }
+                                        placeholder={ "0" }
                                         isRequirement={ false }
                                         value={ cargoWeight }
                                         onChange={ (e) => setCargoWeight(e.target.value) }
+                                        pattern="\d*"
                                     />
                                 </div>
                                 <div className="index__about-item">
