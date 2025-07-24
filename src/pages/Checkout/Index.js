@@ -343,7 +343,7 @@ export default function Index({ theme='light' }) {
                     <div className={`index__primary-btn ${isShowRightBar ? "index__primary-btn--hidden" : ""}`}>
                         <PrimaryBtn
                             text={ "Continue" }
-                            // isDisabled={ isOrder }
+                            isDisabled={ isOrder }
                             onClick={ handleChangeShowLeftBar }
                         />
                     </div>

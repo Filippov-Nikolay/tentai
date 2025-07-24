@@ -82,8 +82,9 @@ export default function RouteDetails({ theme='light', onRoutesChange }) {
     }, [shouldRecalculate]);
 
     const isLimitReached = routes.length >= alphabet.length;
+    
+    const ORS_API_KEY = process.env.REACT_APP_API_KEY_ROUTE;
 
-    const ORS_API_KEY = process.env.API_KEY_ROUTE;
     const calculateDistances = async () => {
     try {
         const addresses = routes.map(r => r.inputValue).filter(Boolean);
