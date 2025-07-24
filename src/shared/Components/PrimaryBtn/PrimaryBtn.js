@@ -6,10 +6,11 @@ import './adaptive.css';
 export default function PrimaryBtn({
     iconSvg,
     text,
-    isDisabled = false
+    isDisabled = false,
+    onClick
 }) {
     return (
-        <button type="button" className={`primary-btn ${isDisabled ? 'primary-btn--disabled' : ''}`}>
+        <button type="button" className={`primary-btn ${isDisabled ? 'primary-btn--disabled' : ''}`} onClick={ onClick }>
             {iconSvg && 
                 <span className="primary-btn__svg">
                     {iconSvg}

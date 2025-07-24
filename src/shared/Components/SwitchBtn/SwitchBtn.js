@@ -3,15 +3,17 @@ import React, { useState } from 'react';
 import './switchBtn.css';
 import './adaptive.css';
 
-export default function SwitchBtn() {
-    const[isSwitch, setSwitch] = useState(false);
-
+export default function SwitchBtn({
+    onSwitch,
+    value = false
+}) {
     const handleSelect = () => {
-        setSwitch(!isSwitch);
+        const newValue = !value;
+        onSwitch?.(newValue); 
     }
 
     return (
-        <button className={`switch-btn ${isSwitch ? "switch-btn--on" : ""}`} onClick={ handleSelect }>
+        <button className={`switch-btn ${value ? "switch-btn--on" : ""}`} onClick={ handleSelect }>
             <span className="switch-btn__thumb"></span>
         </button>
     )

@@ -6,6 +6,8 @@ import './adaptive.css';
 import { EditSVG } from '../../assets/svg/svgComponents';
 
 export default function ContactInfo({
+    contact,
+    setContact
 }) {
     const[isEdit, setEdit] = useState(true);
 
@@ -23,6 +25,8 @@ export default function ContactInfo({
                             className={`contact-info__input ${!isEdit ? '' : 'contact-info__input--edit'}`} 
                             readOnly={ !isEdit } 
                             type='text'
+                            value={contact.fullName}
+                            onChange={e => setContact({...contact, fullName: e.target.value})}
                         ></input> 
                     </div>
                     <div className="contact-info__info-item">
@@ -31,6 +35,8 @@ export default function ContactInfo({
                             className={`contact-info__input ${!isEdit ? '' : 'contact-info__input--edit'}`} 
                             readOnly={ !isEdit } 
                             type='email'
+                            value={contact.email}
+                            onChange={e => setContact({...contact, email: e.target.value})}
                         ></input> 
                     </div>
                     <div className="contact-info__info-item">
@@ -39,6 +45,8 @@ export default function ContactInfo({
                             className={`contact-info__input ${!isEdit ? '' : 'contact-info__input--edit'}`} 
                             readOnly={ !isEdit } 
                             type='number'
+                            value={contact.phoneNumber}
+                            onChange={e => setContact({...contact, phoneNumber: e.target.value})}
                         ></input>
                     </div>
                 </div>

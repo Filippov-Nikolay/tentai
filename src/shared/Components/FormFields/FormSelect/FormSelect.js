@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './formSelect.css';
 import './adaptive.css';
@@ -14,25 +14,40 @@ export default function FormSelect({
     options,
     defaultOptionIndex,
     onSelect,
-    isInput = true
+    onChange,
+    isInput = true,
+    value = ""
 }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     const maxLength = Math.max(...options.map((item) => item.length));
 
     const [selectedIndex, setSelectedIndex] = useState(defaultOptionIndex && '');
+    const [inputValue, setInputValue] = useState(options && options[defaultOptionIndex] || '');
+
+    React.useEffect(() => {
+        if (value !== undefined && value !== inputValue) {
+            setInputValue(value);
+        }
+    }, [value]);
+
     const handleSelect = (index) => {
         setSelectedIndex(index);
         setInputValue(options[index]);
         setIsOpen(false);
+
         // Сообщаем наружу
         onSelect?.(options[index]);
+        onChange?.(options[index]);
+    };
+
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+        onChange?.(e.target.value);
     };
 
     const [isOpen, setIsOpen] = React.useState(false);
     const toggleMenu = () => setIsOpen(prev => !prev);
-
-    const [inputValue, setInputValue] = useState(options && options[defaultOptionIndex] || '');
 
     return (
         <div className={`form-select ${currentTheme}`}>
@@ -44,7 +59,7 @@ export default function FormSelect({
                     placeholder={ placeholder }
                     onClick={ toggleMenu }
                     value={ isInput ? inputValue : options[selectedIndex] }
-                    onChange={ isInput ? (e) => setInputValue(e.target.value) : undefined }
+                    onChange={ isInput ? handleInputChange : undefined }
                     isInput={ isInput }
                     maxWidth={ maxLength }
                 />
