@@ -18,6 +18,8 @@ export default function FormSelect({
 }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
+    const maxLength = Math.max(...options.map((item) => item.length));
+
     const [selectedIndex, setSelectedIndex] = useState(defaultOptionIndex && '');
     const handleSelect = (index) => {
         setSelectedIndex(index);
@@ -30,7 +32,7 @@ export default function FormSelect({
     const [isOpen, setIsOpen] = React.useState(false);
     const toggleMenu = () => setIsOpen(prev => !prev);
 
-    const [inputValue, setInputValue] = useState(options[defaultOptionIndex] || '');
+    const [inputValue, setInputValue] = useState(options && options[defaultOptionIndex] || '');
 
     return (
         <div className={`form-select ${currentTheme}`}>
@@ -44,7 +46,8 @@ export default function FormSelect({
                     value={ isInput ? inputValue : options[selectedIndex] }
                     onChange={ isInput ? (e) => setInputValue(e.target.value) : undefined }
                     isInput={ isInput }
-                    />
+                    maxWidth={ maxLength }
+                />
                 <ul className={`form-select__menu ${isOpen ? '' : 'form-select__menu--hidden'}`}>
                     {options && options.map((item, index) => (
                         <li key={index} onClick={() => handleSelect(index)} className="form-select__item">{ item }</li>

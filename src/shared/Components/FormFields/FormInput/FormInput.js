@@ -12,9 +12,11 @@ export default function FormInput({
     iconSVG,
     onClick,
     onChange,
-    isInput = true
+    isInput = true,
+    maxWidth
 }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
+    const currentMaxWidth = (maxWidth && !isInput) && maxWidth + 3;
 
     return (
         <div className={`form-input ${currentTheme}`}>
@@ -33,6 +35,10 @@ export default function FormInput({
                     className="form-input__input"
                     readOnly={ !isInput }
                     value={ value } onChange={onChange} 
+                    style={{
+                        maxWidth: `${currentMaxWidth}ch` || undefined,
+                        minWidth: `${currentMaxWidth}ch` || undefined
+                    }}
                 />
                 {iconSVG && <button type="button" className="form-input__btn" onClick={ !isInput ? undefined : onClick }>{ iconSVG }</button>}
             </div>
