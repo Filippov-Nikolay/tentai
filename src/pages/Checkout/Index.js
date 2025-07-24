@@ -218,6 +218,7 @@ export default function Index({ theme='light' }) {
     let loadingCost = Math.round(hoursWorked * costPerHourLoading * 100) / 100;
 
     const handleChange = () => {
+        alert("Данные отправлены!");
         console.log(result);
     }
 
