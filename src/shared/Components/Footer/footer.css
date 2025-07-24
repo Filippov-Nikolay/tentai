@@ -1,0 +1,118 @@
+.footer {
+    background-color: #F6F3F7;;
+}
+.footer__wrapper-content {
+    position: relative;
+
+    display: flex;
+
+    padding: 32px 0;
+}
+.footer__left-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+
+    width: 100%;
+    min-height: 215px
+}
+.footer__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    margin-right: auto;
+
+    max-width: 245px;
+    width: 100%;
+}
+.footer__img-wrapper {
+    margin-bottom: 15px;
+}
+.footer__img {
+}
+.footer__copyright {
+    max-width: 185px;
+
+    font-size: 10px;
+}
+.footer__title {
+    margin-bottom: 22px;
+
+    color: #1A141F;
+    font-size: 16px;
+}
+.footer__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.footer__list-item {
+}
+.footer__list-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    color: #062823;
+    font-size: 14px;
+
+    transition: all .5s ease;
+}
+.footer__list-link:hover {
+    opacity: 0.5;
+}
+.footer__list-link-svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    min-height: 24px;
+}
+.footer__list-link-text {
+}
+.footer__social-list {
+    display: flex;
+    gap: 16px;
+
+    margin-top: 16px;
+}
+.footer__social-item {
+}
+.footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 32px;
+    min-height: 32px;
+
+    transition: all .5s ease;
+}
+.footer__social-link:hover {
+    opacity: 0.5;
+}
+.footer__social-link--big-icon {
+    min-width: 42px;
+    min-height: 42px;
+}
+.footer__right-content {
+    display: flex;
+    align-items: end;
+}
+.footer__right-content--select .form-input__wrapper-input--only-read {
+    border: none;
+    
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.footer__right-content--select .form-input__input {
+    color: #D128A1;
+    font-weight: 600;
+}
+.footer__right-content--select .form-select__menu {
+    bottom: 30px;
+    filter: none;
+    border-radius: 20px 20px 0px 0px;
+}
