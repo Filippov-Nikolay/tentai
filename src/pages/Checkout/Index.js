@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import './styles/main.css';
-import './styles/adaptive.css';
+import './styles/main.scss';
+import './styles/adaptive.scss';
 
 // COMPONENTS
 import Header from '../../shared/Components/Header/Header';
@@ -32,25 +32,76 @@ export default function Index({ theme='light' }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     // ROUTE
-    const[currentRoutes, setCurrentRoutes] = useState([]);
+    const [currentRoutes, setCurrentRoutes] = useState(() => {
+        const saved = localStorage.getItem('currentRoutes');
+        return saved ? JSON.parse(saved) : [];
+    });
+    useEffect(() => {
+        localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
+    }, [currentRoutes]);
 
     // ABOUT
-    const[dateOfUpload, setDateOfUpload] = useState('');
-    const[timeOfArrival, setTimeOfArrival] = useState('');
-    const[cargoWeight, setCargoWeight] = useState(0.0);
-    const[typeOfCargo, setTypeOfCargo] = useState('');
-    const[cargoSize, setCargoSize] = useState({}); // или начни с: { length: 0, weight: 0, height: 0, unit: '' }
-    const[forwardingService, setForwardingService] = useState(false);
+    const[dateOfUpload, setDateOfUpload] = useState(() => 
+        localStorage.getItem('dateOfUpload') || ''
+    );
+    useEffect(() => {
+        localStorage.setItem('dateOfUpload', dateOfUpload);
+    }, [dateOfUpload]);
+
+    const [timeOfArrival, setTimeOfArrival] = useState(() => 
+        localStorage.getItem('timeOfArrival') || ''
+    );
+    useEffect(() => {
+        localStorage.setItem('timeOfArrival', timeOfArrival);
+    }, [timeOfArrival]);
+
+    const [cargoWeight, setCargoWeight] = useState(() => 
+        localStorage.getItem('cargoWeight') || 0.0
+    );
+    useEffect(() => {
+        localStorage.setItem('cargoWeight', cargoWeight);
+    }, [cargoWeight]);
+
+    const [typeOfCargo, setTypeOfCargo] = useState(() => 
+        localStorage.getItem('typeOfCargo') || ''
+    );
+    useEffect(() => {
+        localStorage.setItem('typeOfCargo', typeOfCargo);
+    }, [typeOfCargo]);
+
+    const [cargoSize, setCargoSize] = useState(() => {
+        const saved = localStorage.getItem('cargoSize');
+        return saved ? JSON.parse(saved) : {};
+    }); // или начни с: { length: 0, weight: 0, height: 0, unit: '' }
+    useEffect(() => {
+        localStorage.setItem('cargoSize', JSON.stringify(cargoSize));
+    }, [cargoSize]);
+
+    const [forwardingService, setForwardingService] = useState(() => {
+        const saved = localStorage.getItem('forwardingService');
+        return saved === 'true';
+    });
+    useEffect(() => {
+        localStorage.setItem('forwardingService', forwardingService);
+    }, [forwardingService]);
 
     // LEAVE A COMMENT
-    const[inputComment, setInputComment] = useState('');
+    const [inputComment, setInputComment] = useState(() => 
+        localStorage.getItem('inputComment') || ''
+    );
+    useEffect(() => {
+        localStorage.setItem('inputComment', inputComment);
+    }, [inputComment]);
 
     // CONTACT INFORMATION
-    const [contact, setContact] = useState({
-        fullName: '',
-        email: '',
-        phoneNumber: ''
+    const [contact, setContact] = useState(() => {
+        const saved = localStorage.getItem('contact');
+        return saved ? JSON.parse(saved) : { fullName: '', email: '', phoneNumber: '' };
     });
+    useEffect(() => {
+        localStorage.setItem('contact', JSON.stringify(contact));
+    }, [contact]);
+
 
     const[isOrder, setIsOrder] = useState(false);
     useEffect(() => {
