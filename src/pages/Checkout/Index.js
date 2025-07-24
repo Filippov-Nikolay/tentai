@@ -155,20 +155,26 @@ export default function Index({ theme='light' }) {
         setIsTimeInvalid(!validateTime(val));
     };
 
-    const[isOrder, setIsOrder] = useState(false);
+    const [isOrder, setIsOrder] = useState(false);
     useEffect(() => {
+        const allFilledRoutes = currentRoutes.every(route => 
+            route.inputValue.trim() !== '' && 
+            route.hoursValue.trim() !== ''
+        );
+
         if (
             dateOfUpload.length === 0 || 
             timeOfArrival.length === 0 || 
             contact.fullName.length === 0 ||
             contact.email.length === 0 ||
-            contact.phoneNumber.length === 0
+            contact.phoneNumber.length === 0 ||
+            !allFilledRoutes
         ) {
             setIsOrder(true);
         } else {
             setIsOrder(false);
         }
-    }, [dateOfUpload, timeOfArrival, contact]);
+    }, [dateOfUpload, timeOfArrival, contact, currentRoutes]);
 
     let result = [
         {
