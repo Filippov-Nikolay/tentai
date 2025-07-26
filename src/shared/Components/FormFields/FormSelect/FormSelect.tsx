@@ -5,25 +5,41 @@ import './adaptive.scss';
 
 import FormInput from '../FormInput/FormInput';
 
+type FormSelectType = {
+    theme?: 'light' | 'dark';
+    label?: string;
+    placeholder?: string;
+    isRequirement?: boolean;
+    iconSVG?: React.ReactNode;
+    options?: string[];
+    defaultOptionIndex?: number;
+    isInput?: boolean;
+    value?: string;
+    onSelect?: (value: string) => void;
+    onChange?: (value: string) => void;
+}
+
 export default function FormSelect({
     theme="light",
     label,
     placeholder = "placeholder", 
     isRequirement = true,
     iconSVG,
-    options,
+    options = [],
     defaultOptionIndex,
-    onSelect,
-    onChange,
     isInput = true,
-    value = ""
-}) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+    value = "",
+    onSelect,
+    onChange
+}: FormSelectType) {
+    const maxLength = options.length ? Math.max(...options.map(item => item.length)) : 10;
 
-    const maxLength = Math.max(...options.map((item) => item.length));
-
-    const [selectedIndex, setSelectedIndex] = useState(defaultOptionIndex && '');
-    const [inputValue, setInputValue] = useState(options && options[defaultOptionIndex] || '');
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(
+        typeof defaultOptionIndex === 'number' ? defaultOptionIndex : null
+    );
+    const [inputValue, setInputValue] = useState(
+        options && typeof defaultOptionIndex === 'number' ? options[defaultOptionIndex] : ''
+    );
 
     React.useEffect(() => {
         if (value !== undefined && value !== inputValue) {
@@ -31,7 +47,7 @@ export default function FormSelect({
         }
     }, [value]);
 
-    const handleSelect = (index) => {
+    const handleSelect = (index: number) => {
         setSelectedIndex(index);
         setInputValue(options[index]);
         setIsOpen(false);
@@ -41,7 +57,7 @@ export default function FormSelect({
         onChange?.(options[index]);
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
         onChange?.(e.target.value);
     };
@@ -50,7 +66,7 @@ export default function FormSelect({
     const toggleMenu = () => setIsOpen(prev => !prev);
 
     return (
-        <div className={`form-select ${currentTheme}`}>
+        <div className={`form-select ${theme}`}>
             <div className="form-select__wrapper-input">
                 <FormInput
                     label={ label }
@@ -58,7 +74,7 @@ export default function FormSelect({
                     iconSVG={ iconSVG }
                     placeholder={ placeholder }
                     onClick={ toggleMenu }
-                    value={ isInput ? inputValue : options[selectedIndex] }
+                    value={isInput ? inputValue : (selectedIndex !== null ? options[selectedIndex] : '')}
                     onChange={ isInput ? handleInputChange : undefined }
                     isInput={ isInput }
                     maxWidth={ maxLength }

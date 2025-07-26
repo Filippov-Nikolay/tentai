@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import './checkboxBtn.scss';
 import './adaptive.scss';
 
+type CheckboxBtnProps = {
+    onChange?: (value: boolean) => void;
+}
+
 export default function CheckboxBtn({
     onChange
-}) {
+}: CheckboxBtnProps) {
     const [checked, setChecked] = useState(false);
 
     const toggleCheckbox = () => {

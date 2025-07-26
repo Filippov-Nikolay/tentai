@@ -3,11 +3,17 @@ import React from 'react';
 import './menuBurger.scss';
 import './adaptive.scss';
 
-export default function MenuBurger({ theme='light', onClick }) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+type MenuBurgerProps = {
+    theme?: 'light' | 'dark';
+    onClick?: () => void;
+}
 
+export default function MenuBurger({ 
+    theme = 'light', 
+    onClick 
+}: MenuBurgerProps) {
     return (
-        <button className={`menu-burger ${currentTheme}`} onClick={ onClick }>
+        <button className={`menu-burger ${theme}`} onClick={ onClick }>
             <span className="menu-burger__span"></span>
             <span className="menu-burger__span"></span>
             <span className="menu-burger__span"></span>

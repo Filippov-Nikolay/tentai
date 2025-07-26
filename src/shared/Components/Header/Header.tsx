@@ -17,13 +17,19 @@ import Notification from '../Notification/Notification';
 import MenuBurger from '../MenuBurger/MenuBurger';
 import PrimaryBtn from '../PrimaryBtn/PrimaryBtn';
 
-export default function Header({ theme='light', onChange, value }) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+type HeaderProps = {
+    value?: boolean;
+    theme?: 'light' | 'dark';
+    onChange?: () => void;
+}
 
-    let isOpen = value;
-
+export default function Header({ 
+    value = false,
+    theme = 'light', 
+    onChange
+}: HeaderProps) {
     return (
-        <header className={`header ${currentTheme}`}>
+        <header className={`header ${theme}`}>
             <div className='container'>
                 <div className="header__wrapper">
                     {/* 
@@ -51,12 +57,12 @@ export default function Header({ theme='light', onChange, value }) {
                     </div>
                     <div className="header__menu-burger">
                         <MenuBurger
-                            theme= { currentTheme }
+                            theme= { theme }
                             onClick={ onChange }
                         />
                     </div>
                     
-                    <div className={`header__right-bar ${isOpen ? "header__right-bar--active" : ""}`}>
+                    <div className={`header__right-bar ${value ? "header__right-bar--active" : ""}`}>
                         <div className="header__prizes">
                             <a href="#" className="prizes">
                                 <div className="prizes__svg">
@@ -68,13 +74,13 @@ export default function Header({ theme='light', onChange, value }) {
                         <div className="header__notification">
                             <Notification
                                 icon={ <MessagesSVG/> }
-                                number={ "99+" }
+                                number={ 99 }
                             />
                         </div>
                         <div className="header__notification">
                             <Notification
                                 icon={ <NotificationSVG/> }
-                                number={ "99+" }
+                                number={ 99 }
                             />
                         </div>
                         <div className="header__profile">

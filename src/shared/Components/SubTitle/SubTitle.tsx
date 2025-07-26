@@ -5,7 +5,13 @@ import './adaptive.scss';
 
 import { LogoForTitleSVG } from '../../assets/svg/svgComponents'
 
-export default function SubTitle({ text }) {
+type SubTitleProps = {
+    text: string;
+}
+
+export default function SubTitle({ 
+    text 
+}: SubTitleProps) {
     return (
         <h2 className="sub-title">
             <span className="sub-title__svg"><LogoForTitleSVG/></span>

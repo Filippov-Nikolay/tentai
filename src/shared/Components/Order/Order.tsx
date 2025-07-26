@@ -11,6 +11,31 @@ import Note from '../Note/Note';
 import PrimaryBtn from '../PrimaryBtn/PrimaryBtn';
 import CheckboxBtn from '../CheckboxBtn/CheckboxBtn';
 
+type OrderProps = {
+    theme?: 'light' | 'dark';
+
+    srcImg?: string;
+    title?: string;
+    currency?: string;
+    location?: string;
+    rating?: number;
+    bannerText?: string;
+
+    firstPoint?: string;
+    lastPoint?: string;
+    nameFirstPoint?: string;
+    nameLastPoint?: string;
+
+    loadingAndUploadingPrice?: number;
+    forwardingService?: number;
+    payment?: number;
+    serviceCommission?: number;
+    totalPrice?: number;
+
+    isDisabled?: boolean;
+    onClick?: () => void;
+};
+
 export default function Order({
     theme = "light",
 
@@ -34,7 +59,7 @@ export default function Order({
 
     isDisabled = false,
     onClick,
-}) {
+}: OrderProps) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     return (

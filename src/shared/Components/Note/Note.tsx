@@ -3,16 +3,21 @@ import React from 'react';
 import './note.scss';
 import './adaptive.scss';
 
+type NoteTypeProps = {
+    title?: string;
+    text?: string;
+    component?: React.ReactNode;
+    theme?: 'light' | 'dark';
+}
+
 export default function Note({
-    theme = "light",
     title,
     text,
-    component
-}) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
-
+    component,
+    theme = "light"
+}: NoteTypeProps) {
     return (
-        <div className={`note ${currentTheme}`}>
+        <div className={`note ${theme}`}>
             {title && 
                 <h4 className="note__title">
                     <span className="note__title-svg">{ component }</span>

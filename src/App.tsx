@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect } from 'react';
+// import logo from './logo.svg';
 import './shared/css/normalize.scss'
 
 import Pages from './pages/Checkout/Index'
 
-const AppRouter = () => {
+function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
 
     useEffect(() => {
@@ -12,7 +12,7 @@ const AppRouter = () => {
         setIsDarkMode(mediaQuery.matches);
 
         // Чтобы реагировать на изменения темы в системе:
-        const handler = (e) => setIsDarkMode(e.matches);
+        const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
         mediaQuery.addEventListener('change', handler);
 
         return () => mediaQuery.removeEventListener('change', handler);
@@ -22,7 +22,7 @@ const AppRouter = () => {
 
     return (
         <Pages theme={ isDarkMode ? "dark" : "light" } />
-    )
+    );
 }
 
-export default AppRouter;
+export default App;

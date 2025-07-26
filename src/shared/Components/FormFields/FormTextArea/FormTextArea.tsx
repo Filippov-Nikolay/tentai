@@ -3,17 +3,23 @@ import React from 'react';
 import './formTextArea.scss';
 import './adaptive.scss';
 
+type FormTextAreaProps = {
+    value?: string;
+    theme?: 'light' | 'dark';
+    maxLength?: number;
+    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}
+
 export default function FormTextArea({
-    theme = "light",
     value = "",
-    onChange,
+    theme = "light",
     maxLength = 4000,
-}) {
+    onChange,
+}: FormTextAreaProps) {
     let currentLength = value.length;
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     return (
-        <div className={`form-text-area ${currentTheme}`}>
+        <div className={`form-text-area ${theme}`}>
             <textarea 
                 name="" 
                 id="" 

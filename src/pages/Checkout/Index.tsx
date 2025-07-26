@@ -22,6 +22,23 @@ import FormTextArea from '../../shared/Components/FormFields/FormTextArea/FormTe
 // ICONS
 import { CalendarSVG, ArrowSVG, WalletSVG } from '../../shared/assets/svg/svgComponents';
 
+type Route = {
+    title: string;
+    point: string;
+    isTrash: boolean;
+    inputValue: string;
+    hoursValue: number;
+    distanceToNext: number | null;
+}
+type CargoSize = {
+  length: string;
+  weight: string;
+  height: string;
+  unit: string;
+}
+
+
+
 export default function Index({ theme='light' }) {
     const costPerKm = 10;               /* стоимость за 1 км */;
     const costPerHourLoading = 100;     /* стоимость времени работы (загрузка/разгрузка) за 1 час */
@@ -32,11 +49,11 @@ export default function Index({ theme='light' }) {
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
 
     // ROUTE
-    const [currentRoutes, setCurrentRoutes] = useState(() => {
+    const [currentRoutes, setCurrentRoutes] = useState<Route[]>(() => {
         const saved = localStorage.getItem('currentRoutes');
         return saved ? JSON.parse(saved) : [
-            { title: 'Download location', point: 'A', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
-            { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: '', distanceToNext: null },
+            { title: 'Download location', point: 'A', isTrash: false, inputValue: '', hoursValue: 0, distanceToNext: null },
+            { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: 0, distanceToNext: null },
         ];
     });
     useEffect(() => {
@@ -59,7 +76,7 @@ export default function Index({ theme='light' }) {
     }, [timeOfArrival]);
 
     const [cargoWeight, setCargoWeight] = useState(() => 
-        localStorage.getItem('cargoWeight') || 0.0
+        localStorage.getItem('cargoWeight') || "0"
     );
     useEffect(() => {
         localStorage.setItem('cargoWeight', cargoWeight);
@@ -72,10 +89,10 @@ export default function Index({ theme='light' }) {
         localStorage.setItem('typeOfCargo', typeOfCargo);
     }, [typeOfCargo]);
 
-    const [cargoSize, setCargoSize] = useState(() => {
+    const [cargoSize, setCargoSize] = useState<CargoSize>(() => {
         const saved = localStorage.getItem('cargoSize');
-        return saved ? JSON.parse(saved) : {};
-    }); // или начни с: { length: 0, weight: 0, height: 0, unit: '' }
+        return saved ? JSON.parse(saved) : { length: '', weight: '', height: '', unit: '' };
+    });
     useEffect(() => {
         localStorage.setItem('cargoSize', JSON.stringify(cargoSize));
     }, [cargoSize]);
@@ -85,7 +102,7 @@ export default function Index({ theme='light' }) {
         return saved === 'true';
     });
     useEffect(() => {
-        localStorage.setItem('forwardingService', forwardingService);
+        localStorage.setItem('forwardingService', forwardingService ? 'true' : 'false');
     }, [forwardingService]);
 
     // LEAVE A COMMENT
@@ -110,11 +127,11 @@ export default function Index({ theme='light' }) {
         return saved === 'true';
     });
     useEffect(() => {
-        localStorage.setItem('isEdit', isEdit);
+        localStorage.setItem('isEdit', isEdit ? 'true' : 'false');
     }, [isEdit]);
 
 
-    const validateDate = (val) => {
+    const validateDate = (val: string) => {
         if (val === '') return true;
 
         const dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
@@ -135,21 +152,21 @@ export default function Index({ theme='light' }) {
     };
 
     const [isInvalid, setIsInvalid] = useState(false);
-    const handelSetDateOfUpload = (e) => {
+    const handelSetDateOfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setDateOfUpload(val);
         setIsInvalid(!validateDate(val));
     };
 
 
-    const validateTime = (val) => {
+    const validateTime = (val: string): boolean => {
         if (val === '') return true;
         const timeRegex = /^([01]?\d|2[0-3]):([0-5]?\d)$/;
         return timeRegex.test(val);
     };
 
     const [isTimeInvalid, setIsTimeInvalid] = useState(false);
-    const handleSetTimeOfArrival = (e) => {
+    const handleSetTimeOfArrival = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setTimeOfArrival(val);
         setIsTimeInvalid(!validateTime(val));
@@ -159,7 +176,8 @@ export default function Index({ theme='light' }) {
     useEffect(() => {
         const allFilledRoutes = currentRoutes.every(route => 
             route.inputValue.trim() !== '' && 
-            route.hoursValue.trim() !== ''
+            route.hoursValue !== null &&
+            route.hoursValue !== undefined
         );
 
         if (
@@ -207,8 +225,8 @@ export default function Index({ theme='light' }) {
     let hoursWorked = 0;                   
     
     currentRoutes.forEach(item => {
-        totalDistanceKm += parseFloat(item.distanceToNext) || 0;
-        hoursWorked += parseFloat(item.hoursValue) || 0;
+        totalDistanceKm += item.distanceToNext || 0
+        hoursWorked += item.hoursValue || 0;
     });
 
     // Стоимость за общее расстояние
@@ -240,7 +258,7 @@ export default function Index({ theme='light' }) {
     let nameFirstPoint = currentRoutes[0]?.inputValue;
 
     let filledLast = [...currentRoutes].reverse().find(route =>
-        route.inputValue?.trim() && route.hoursValue?.trim()
+        route.inputValue?.trim() && route.hoursValue
     );
 
     let lastPoint = filledLast?.point;

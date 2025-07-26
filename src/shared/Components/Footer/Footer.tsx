@@ -15,13 +15,15 @@ import {
 
 import FormSelect from '../FormFields/FormSelect/FormSelect';
 
+type FooterProps = {
+    theme?: 'light' | 'dark';
+}
+
 export default function Footer({
     theme = "light"
-}) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
-
+}: FooterProps) {
     return (
-        <footer className={`footer ${currentTheme}`}>
+        <footer className={`footer ${theme}`}>
             <div className="container">
                 <div className="footer__wrapper-content">
                     <div className="footer__left-content">
@@ -106,6 +108,7 @@ export default function Footer({
                     </div>
                     <div className="footer__right-content footer__right-content--select">
                         <FormSelect
+                            theme={ theme }
                             iconSVG={ <ArrowSVG/> }
                             isRequirement={ false }
                             options={ ["English", "Spanish"] }

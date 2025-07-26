@@ -3,10 +3,15 @@ import React from 'react';
 import './switchBtn.scss';
 import './adaptive.scss';
 
+type SwitchBtnProps = {
+    value?: boolean;
+    onSwitch?: (newValue: boolean) => void;
+}
+
 export default function SwitchBtn({
-    onSwitch,
-    value = false
-}) {
+    value = false,
+    onSwitch
+}: SwitchBtnProps) {
     const handleSelect = () => {
         const newValue = !value;
         onSwitch?.(newValue); 

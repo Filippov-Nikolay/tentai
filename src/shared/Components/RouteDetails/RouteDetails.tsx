@@ -13,13 +13,26 @@ import { geocodeAddress, calculateORSMatrix } from '../../../pages/Checkout/serv
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
+type Route = {
+    title: string;
+    point: string;
+    isTrash: boolean;
+    inputValue: string;
+    hoursValue: number;
+    distanceToNext: number | null;
+}
+
+type RouteDetailsType = {
+    theme?: 'light' | 'dark';
+    routesData: Route[];
+    onRoutesChange: (newRoutes: Route[]) => void;
+}
+
 export default function RouteDetails({ 
     theme='light', 
+    routesData,
     onRoutesChange,
-    routesData = []
-}) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
-
+}: RouteDetailsType) {
     const [routes, setRoutes] = useState(routesData);
     const [shouldRecalculate, setShouldRecalculate] = useState(false);
 
@@ -27,10 +40,13 @@ export default function RouteDetails({
         setRoutes(routesData);
     }, [routesData]);
 
-    const handleChange = (index, field, value) => {
+    const handleChange = (index: number, field: 'inputValue' | 'hoursValue', value: string) => {
         setRoutes(prev => {
             const newRoutes = [...prev];
-            newRoutes[index][field] = value;
+            newRoutes[index] = {
+                ...newRoutes[index],
+                [field]: field === 'hoursValue' ? Number(value) : value,
+            }
             return newRoutes;
         });
     };
@@ -45,8 +61,8 @@ export default function RouteDetails({
             point: nextLetter,
             isTrash: true,
             inputValue: '',
-            hoursValue: '',
-            distanceToNext: null
+            hoursValue: 0,
+            distanceToNext: 0.0
         });
 
         setRoutes(newRoutes);
@@ -60,7 +76,7 @@ export default function RouteDetails({
     }, [shouldRecalculate]);
 
 
-    const deleteRoute = (index) => {
+    const deleteRoute = (index: number) => {
         const baseRoutes = routes.slice(0, 2);
         const extraRoutes = routes.slice(2);
 
@@ -104,7 +120,7 @@ export default function RouteDetails({
 
         // Последней точке обнуляем distanceToNext
         if (updatedRoutes.length > 0) {
-            updatedRoutes[updatedRoutes.length - 1].distanceToNext = null;
+            updatedRoutes[updatedRoutes.length - 1].distanceToNext = -1;
         }
 
         setRoutes(updatedRoutes);
@@ -114,29 +130,35 @@ export default function RouteDetails({
         }
     };
 
-    const debounceTimer = useRef(null);
+    const debounceTimer = useRef<number | null>(null);
     useEffect(() => {
         if (debounceTimer.current) {
             clearTimeout(debounceTimer.current);
         }
 
         const allFilled = routes.every(route => 
-            route.inputValue.trim() !== '' && route.hoursValue.trim() !== ''
+            route.inputValue.trim() !== '' && 
+            route.hoursValue !== null && 
+            route.hoursValue !== undefined
         );
 
         if (!allFilled) {
             return;
         }
 
-        debounceTimer.current = setTimeout(() => {
+        debounceTimer.current = window.setTimeout(() => {
             calculateDistances();
         }, 2000);
 
-        return () => clearTimeout(debounceTimer.current);
+        return () => {
+            if (debounceTimer.current !== null) {
+                clearTimeout(debounceTimer.current);
+            }
+        };
     }, [routes]);
 
     return (
-        <div className={`route-details ${ currentTheme }`}>
+        <div className={`route-details ${ theme }`}>
             <div className="route-details__list">
                 {routes.map((item, index) => (
                     <div className="route-details__item" key={ index }>
@@ -159,7 +181,7 @@ export default function RouteDetails({
                                 <FormInput
                                     label={ `Operating time (hour)` }
                                     placeholder={ "Enter hour" }
-                                    value={ item.hoursValue }
+                                    value={ String(item.hoursValue) }
                                     onChange={(e) => handleChange(index, 'hoursValue', e.target.value)}
                                     pattern="\d*"
                                 />

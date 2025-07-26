@@ -5,15 +5,27 @@ import './adaptive.scss';
 
 import { EditSVG } from '../../assets/svg/svgComponents';
 
+type Contact = {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+}
+
+type ContactInfoProps = {
+    contact: Contact;
+    setContact: (contact: Contact) => void;
+    theme?: 'light' | 'dark';
+    isEditDef?: boolean;
+    onEditChange?: (isEdit: boolean) => void;
+}
+
 export default function ContactInfo({
-    theme = "light",
     contact,
     setContact,
+    theme = 'light',
     isEditDef = true,
     onEditChange
-}) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
-
+}: ContactInfoProps) {
     const[isEdit, setEdit] = useState(isEditDef);
     const [tempContact, setTempContact] = useState(contact);
 
@@ -32,7 +44,7 @@ export default function ContactInfo({
     };
 
     return (
-        <div className={`contact-info ${currentTheme}`}>
+        <div className={`contact-info ${theme}`}>
             <div className="contact-info__wrapper">
                 <div className="contact-info__item contact-info__item--left">
                     <div className="contact-info__info-item">
