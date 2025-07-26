@@ -20,14 +20,14 @@ export default function FormTextArea({
 
     return (
         <div className={`form-text-area ${theme}`}>
-            <textarea 
-                name="" 
-                id="" 
-                maxLength={ maxLength } 
-                className="form-text-area__textarea" 
-                value={ value } 
-                onChange={ onChange }
-            ></textarea>
+            <div className="form-text-area__wrapper">
+                <textarea 
+                    maxLength={ maxLength } 
+                    className="form-text-area__textarea" 
+                    value={ value } 
+                    onChange={ onChange }
+                ></textarea>
+            </div>
             <div className="form-text-area__wrapper-count-character">
                 <span className="form-text-area__count-character">{`${currentLength} / ${maxLength}`}</span>
             </div>

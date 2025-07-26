@@ -2,10 +2,16 @@
     --color-border-search: #7E8588;
     --color-border-search-only-read: #000000;
     --color-text-input: #000000;
+    --color-svg: #000000;
+    --bg-color-error-msg: #ffffff;
+    --color-error-msg: #000000;
 }
 .dark {
     --color-text-input: #ffffff;
     --color-border-search-only-read: #ffffff;
+    --color-svg: #ffffff;
+    --bg-color-error-msg: #202020;
+    --color-error-msg: #ffffff;
 }
 
 .form-input {
@@ -76,7 +82,7 @@
 
     padding: 5px 10px;
 
-    background-color: #ffffff;
+    background-color: var(--bg-color-error-msg);
     border: 1px solid red;
     border-radius: 8px;
 }

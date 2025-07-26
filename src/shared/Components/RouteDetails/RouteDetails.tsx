@@ -104,27 +104,27 @@ export default function RouteDetails({
     const ORS_API_KEY = process.env.REACT_APP_API_KEY_ROUTE;
 
     const calculateDistances = async () => {
-    try {
-        const addresses = routes.map(r => r.inputValue).filter(Boolean);
+        try {
+            const addresses = routes.map(r => r.inputValue).filter(Boolean);
 
-        const coords = await Promise.all(addresses.map(addr => geocodeAddress(addr, ORS_API_KEY)));
+            const coords = await Promise.all(addresses.map(addr => geocodeAddress(addr, ORS_API_KEY)));
 
-        const matrix = await calculateORSMatrix(coords, ORS_API_KEY);
+            const matrix = await calculateORSMatrix(coords, ORS_API_KEY);
 
-        const updatedRoutes = [...routes];
+            const updatedRoutes = [...routes];
 
-        for (let i = 0; i < coords.length - 1; i++) {
-            const distance = matrix.distances[i][i + 1];
-            updatedRoutes[i].distanceToNext = distance.toFixed(2); // сохраняем как строку, чтобы было удобно отобразить
-        }
+            for (let i = 0; i < coords.length - 1; i++) {
+                const distance = matrix.distances[i][i + 1];
+                updatedRoutes[i].distanceToNext = distance.toFixed(2); // сохраняем как строку, чтобы было удобно отобразить
+            }
 
-        // Последней точке обнуляем distanceToNext
-        if (updatedRoutes.length > 0) {
-            updatedRoutes[updatedRoutes.length - 1].distanceToNext = -1;
-        }
+            // Последней точке обнуляем distanceToNext
+            if (updatedRoutes.length > 0) {
+                updatedRoutes[updatedRoutes.length - 1].distanceToNext = -1;
+            }
 
-        setRoutes(updatedRoutes);
-        onRoutesChange?.(updatedRoutes);
+            setRoutes(updatedRoutes);
+            onRoutesChange?.(updatedRoutes);
         } catch (error) {
             console.error("Ошибка при расчёте маршрута:", error);
         }
@@ -174,7 +174,7 @@ export default function RouteDetails({
                                     iconSVG={ <MapSVG/> }
                                     value={ item.inputValue }
                                     onChange={(e) => handleChange(index, 'inputValue', e.target.value)}
-                                    pattern="[A-Za-zА-Яа-я]*"
+                                    pattern="[A-Za-zА-Яа-яЁё0-9\s,.-]*"
                                 />
                             </div>
                             <div className="route-details__right-item">

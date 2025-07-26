@@ -1,3 +1,12 @@
+:root {
+    --bg-color-select: #ffffff;
+    --color-form-select: #000000;
+}
+.dark {
+    --bg-color-select: #161616;
+    --color-form-select: #ffffff;
+}
+
 .form-select__label {
     display: flex;
     gap: 4px;
@@ -22,7 +31,7 @@
     padding: 10px 15px;
 
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--bg-color-select);
     border-radius: 0px 0px 20px 20px;
     filter: drop-shadow(0px 4px 15px rgba(0, 0, 0, 0.1));
 
@@ -32,6 +41,8 @@
     display: none;
 }
 .form-select__item {
+    color: var(--color-form-select);
+
     transition: all .2s ease;
 }
 .form-select__item:hover {
