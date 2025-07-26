@@ -8,9 +8,6 @@ import { MapSVG, TrashSVG } from '../../assets/svg/svgComponents'
 // COMPONENTS - FormFields
 import FormInput from '../FormFields/FormInput/FormInput';
 
-// SERVICES
-import { geocodeAddress, calculateORSMatrix } from '../../../pages/Checkout/services/apiService'
-
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 type Route = {
@@ -33,134 +30,45 @@ export default function RouteDetails({
     routesData,
     onRoutesChange,
 }: RouteDetailsType) {
-    const [routes, setRoutes] = useState(routesData);
-    const [shouldRecalculate, setShouldRecalculate] = useState(false);
-
-    React.useEffect(() => {
-        setRoutes(routesData);
-    }, [routesData]);
-
-    const handleChange = (index: number, field: 'inputValue' | 'hoursValue', value: string) => {
-        setRoutes(prev => {
-            const newRoutes = [...prev];
-            newRoutes[index] = {
-                ...newRoutes[index],
-                [field]: field === 'hoursValue' ? Number(value) : value,
-            }
-            return newRoutes;
-        });
-    };
+    const isLimitReached = routesData.length >= alphabet.length;
 
     const addRoute = () => {
-        const newRoutes = [...routes];
-        const nextIndex = newRoutes.length;
-        const nextLetter = alphabet[nextIndex];
+        const nextPoint = alphabet[routesData.length] || '?';
 
-        newRoutes.push({
-            title: `Custom point`,
-            point: nextLetter,
-            isTrash: true,
-            inputValue: '',
-            hoursValue: 0,
-            distanceToNext: 0.0
-        });
+        const newRoutes = [
+            ...routesData,
+            { title: 'Download location', point: `${nextPoint}`, isTrash: true, inputValue: '', hoursValue: 0, distanceToNext: null }
+        ];
 
-        setRoutes(newRoutes);
-        setShouldRecalculate(true);
-    };
-    React.useEffect(() => {
-        if (shouldRecalculate) {
-            calculateDistances();
-            setShouldRecalculate(false);
-        }
-    }, [shouldRecalculate]);
-
+        onRoutesChange?.(newRoutes);
+    }
 
     const deleteRoute = (index: number) => {
-        const baseRoutes = routes.slice(0, 2);
-        const extraRoutes = routes.slice(2);
+        let newRoutes = routesData.filter((_, i) => i !== index);
 
-        const newExtras = extraRoutes.filter((_, i) => i + 2 !== index);
-
-        const reindexedExtras = newExtras.map((item, idx) => ({
-            ...item,
-            point: alphabet[idx + 2],
+        newRoutes = newRoutes.map((route, i) => ({
+            ...route,
+            point: alphabet[i] || '?'
         }));
 
-        const updatedRoutes = [...baseRoutes, ...reindexedExtras];
-        setRoutes(updatedRoutes);
-        setShouldRecalculate(true);
-    };
+        onRoutesChange?.(newRoutes);
+    }
 
-    React.useEffect(() => {
-        if (shouldRecalculate) {
-            calculateDistances();
-            setShouldRecalculate(false);
-        }
-    }, [shouldRecalculate]);
+    const handleChange = (index: number, key: 'inputValue' | 'hoursValue', value: string) => {
+        const newRoutes = [...routesData];
+        const updateItem = { ...newRoutes[index] };
 
-    const isLimitReached = routes.length >= alphabet.length;
+        if (key === 'hoursValue') { updateItem.hoursValue = Number(value); } 
+        else { updateItem.inputValue = value; }
+        newRoutes[index] = updateItem;
+
+        onRoutesChange?.(newRoutes);
+    }
     
-    const ORS_API_KEY = process.env.REACT_APP_API_KEY_ROUTE;
-
-    const calculateDistances = async () => {
-        try {
-            const addresses = routes.map(r => r.inputValue).filter(Boolean);
-
-            const coords = await Promise.all(addresses.map(addr => geocodeAddress(addr, ORS_API_KEY)));
-
-            const matrix = await calculateORSMatrix(coords, ORS_API_KEY);
-
-            const updatedRoutes = [...routes];
-
-            for (let i = 0; i < coords.length - 1; i++) {
-                const distance = matrix.distances[i][i + 1];
-                updatedRoutes[i].distanceToNext = distance.toFixed(2); // сохраняем как строку, чтобы было удобно отобразить
-            }
-
-            // Последней точке обнуляем distanceToNext
-            if (updatedRoutes.length > 0) {
-                updatedRoutes[updatedRoutes.length - 1].distanceToNext = -1;
-            }
-
-            setRoutes(updatedRoutes);
-            onRoutesChange?.(updatedRoutes);
-        } catch (error) {
-            console.error("Ошибка при расчёте маршрута:", error);
-        }
-    };
-
-    const debounceTimer = useRef<number | null>(null);
-    useEffect(() => {
-        if (debounceTimer.current) {
-            clearTimeout(debounceTimer.current);
-        }
-
-        const allFilled = routes.every(route => 
-            route.inputValue.trim() !== '' && 
-            route.hoursValue !== null && 
-            route.hoursValue !== undefined
-        );
-
-        if (!allFilled) {
-            return;
-        }
-
-        debounceTimer.current = window.setTimeout(() => {
-            calculateDistances();
-        }, 2000);
-
-        return () => {
-            if (debounceTimer.current !== null) {
-                clearTimeout(debounceTimer.current);
-            }
-        };
-    }, [routes]);
-
     return (
         <div className={`route-details ${ theme }`}>
             <div className="route-details__list">
-                {routes.map((item, index) => (
+                {routesData.map((item, index) => (
                     <div className="route-details__item" key={ index }>
                         <div className="route-details__wrapper">
                             <h2 className="route-details__title">{ item.title }</h2>

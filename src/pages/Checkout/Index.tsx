@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import './styles/main.scss';
 import './styles/adaptive.scss';
@@ -19,6 +19,9 @@ import FormInput from '../../shared/Components/FormFields/FormInput/FormInput'
 import FormSelect from '../../shared/Components/FormFields/FormSelect/FormSelect';
 import FormTextArea from '../../shared/Components/FormFields/FormTextArea/FormTextArea';
 
+// SERVICES
+import { calculateDistances } from './services/apiService'
+
 // ICONS
 import { CalendarSVG, ArrowSVG, WalletSVG } from '../../shared/assets/svg/svgComponents';
 
@@ -31,15 +34,16 @@ type Route = {
     distanceToNext: number | null;
 }
 type CargoSize = {
-  length: string;
-  weight: string;
-  height: string;
-  unit: string;
+    length: string;
+    weight: string;
+    height: string;
+    unit: string;
 }
 
-
-
 export default function Index({ theme='light' }) {
+    // API
+    const ORS_API_KEY = process.env.REACT_APP_API_KEY_ROUTE;
+
     const costPerKm = 10;               /* стоимость за 1 км */;
     const costPerHourLoading = 100;     /* стоимость времени работы (загрузка/разгрузка) за 1 час */
     const commissionRate = 0.3;         /* 30% комиссия */
@@ -47,6 +51,11 @@ export default function Index({ theme='light' }) {
 
     // THEME
     const currentTheme = theme === 'dark' ? 'dark' : 'light';
+
+    const[firstPoint, setFirstPoint] = useState('');
+    const[nameFirstPoint, setNameFirstPoint] = useState('');
+    const[lastPoint, setLastPoint] = useState('');
+    const[nameLastPoint, setNameLastPoint] = useState('');
 
     // ROUTE
     const [currentRoutes, setCurrentRoutes] = useState<Route[]>(() => {
@@ -56,9 +65,52 @@ export default function Index({ theme='light' }) {
             { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: 0, distanceToNext: null },
         ];
     });
+    let filledLast = [...currentRoutes].reverse().find(route =>
+        route.inputValue?.trim() && route.hoursValue
+    );
+
+    // Debounce route
+    const debounceTimerStorage = useRef<number | undefined>(undefined);
     useEffect(() => {
-        localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
+        if (debounceTimerStorage.current) {
+            clearTimeout(debounceTimerStorage.current);
+        }
+
+        debounceTimerStorage.current = window.setTimeout(() => {
+            localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
+        }, 1000);
+
+        return () => clearTimeout(debounceTimerStorage.current);
     }, [currentRoutes]);
+
+    const debounceTimerCalculate = useRef<number | undefined>(undefined);
+    useEffect(() => {
+        if (debounceTimerCalculate.current) {
+            clearTimeout(debounceTimerCalculate.current);
+        }
+
+        const allField = currentRoutes.every(route => 
+            route.inputValue.trim() !== '' &&
+            route.hoursValue >= 0
+        );
+
+        if (!allField) {
+            return;
+        }
+
+        debounceTimerCalculate.current = window.setTimeout(() => {
+            console.log("TRUE — данные готовы")
+
+            setFirstPoint(currentRoutes[0].point);
+            setNameFirstPoint(currentRoutes[0].inputValue);
+
+            setLastPoint(String(filledLast?.point));
+            setNameLastPoint(String(filledLast?.inputValue));
+
+            calculateDistances(currentRoutes, setCurrentRoutes, String(ORS_API_KEY));
+        }, 2000);
+    }, [currentRoutes.map(route => route.inputValue).join('||')]);
+
 
     // ABOUT
     const[dateOfUpload, setDateOfUpload] = useState(() => 
@@ -254,16 +306,6 @@ export default function Index({ theme='light' }) {
     // Общая сумма к оплате
     const totalSum = distanceCost + loadingCost;
 
-    let firstPoint = currentRoutes[0]?.point;
-    let nameFirstPoint = currentRoutes[0]?.inputValue;
-
-    let filledLast = [...currentRoutes].reverse().find(route =>
-        route.inputValue?.trim() && route.hoursValue
-    );
-
-    let lastPoint = filledLast?.point;
-    let nameLastPoint = filledLast?.inputValue;
-
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => {
         setIsOpen(!isOpen);        
@@ -317,8 +359,8 @@ export default function Index({ theme='light' }) {
                             <div className="index__route-details">
                                 <RouteDetails
                                     theme={ currentTheme }
-                                    onRoutesChange={ setCurrentRoutes }
                                     routesData={ currentRoutes }
+                                    onRoutesChange={ setCurrentRoutes }
                                 />
                             </div>
                         </section>
