@@ -39,9 +39,7 @@ export const calculateDistances = async(
 
         console.log(routes);
 
-        if (JSON.stringify(routes) !== JSON.stringify(updatedRoutes)) {
-            setRoutes(updatedRoutes);
-        }
+        setRoutes(updatedRoutes);
     } catch (error) {
         console.error("Ошибка при расчёте маршрута:", error);
     }

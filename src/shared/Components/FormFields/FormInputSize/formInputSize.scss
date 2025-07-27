@@ -1,0 +1,32 @@
+:root {
+    --bg-color-form-input-size: #ffffff;
+    --color-label-text: #000000;
+    --color-element: #000000;
+}
+.dark {
+    --bg-color-form-input-size: #202020;
+    --color-label-text: #ffffff;
+    --color-element: #ffffff;
+}
+
+.form-input-size {
+    background-color: var(--bg-color-form-input-size);
+}
+.form-input-size__label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--color-label-text);
+}
+.form-input-size__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+}
+.form-input-size__item {
+}
+.form-input-size__element {
+    color: var(--color-element);
+}

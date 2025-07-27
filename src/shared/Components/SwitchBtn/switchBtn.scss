@@ -1,3 +1,25 @@
+:root {
+    --bg-color-switch-btn: #ffffff;
+    --color-label-text: #000000;
+}
+.dark {
+    --bg-color-switch-btn: #202020;
+    --color-label-text: #ffffff;
+}
+
+.switch-btn__wrapper {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+
+    background-color: var(--bg-color-switch-btn);
+}
+.switch-btn__label {
+    display: block;
+
+    color: var(--color-label-text);
+}
 .switch-btn {
     padding: 2px;
 

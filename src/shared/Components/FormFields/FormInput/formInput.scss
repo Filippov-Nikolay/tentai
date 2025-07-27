@@ -1,12 +1,16 @@
 :root {
+    --bg-color-form-input: #ffffff;
     --color-border-search: #7E8588;
     --color-border-search-only-read: #000000;
+    --color-label-text: #000000;
     --color-text-input: #000000;
     --color-svg: #000000;
     --bg-color-error-msg: #ffffff;
     --color-error-msg: #000000;
 }
 .dark {
+    --bg-color-form-input: #202020;
+    --color-label-text: #ffffff;
     --color-text-input: #ffffff;
     --color-border-search-only-read: #ffffff;
     --color-svg: #ffffff;
@@ -15,6 +19,7 @@
 }
 
 .form-input {
+    background-color: var(--bg-color-form-input);
 }
 .form-input__label {
     display: flex;
@@ -24,6 +29,7 @@
 
     width: max-content;
 
+    color: var(--color-label-text);
     font-size: 16px;
     font-weight: 400;
 }
@@ -81,6 +87,8 @@
     z-index: 2;
 
     padding: 5px 10px;
+
+    color: var(--color-error-msg);
 
     background-color: var(--bg-color-error-msg);
     border: 1px solid red;

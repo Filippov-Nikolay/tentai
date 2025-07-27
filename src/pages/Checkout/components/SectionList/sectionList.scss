@@ -1,0 +1,31 @@
+:root {
+    --bg-color-section-list: #ffffff;
+    --color-sub-title: #000000;
+}
+.dark {
+    --bg-color-section-list: #202020;
+    --color-sub-title: #ffffff;
+}
+
+.section-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    // margin-bottom: 52px;
+    padding: 12px 8px;
+
+    width: 100%;
+
+    box-shadow: 1px 3px 10px rgba(0, 0, 0, 7%);
+
+    background-color: var(--bg-color-section-list);
+}
+.section-list__section {
+    max-width: 705px;
+}
+.section-list__sub-title {
+    margin-bottom: 8px;
+
+    color: var(--color-sub-title);
+}

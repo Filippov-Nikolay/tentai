@@ -60,10 +60,15 @@ export default function Order({
     isDisabled = false,
     onClick,
 }: OrderProps) {
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+    const prices = [
+        { label: 'Loading and unloading route', value: loadingAndUploadingPrice },
+        { label: 'Forwarding services', value: forwardingService },
+        { label: 'Payment', value: payment },
+        { label: 'Service commission', value: serviceCommission }
+    ];
 
     return (
-        <div className={`order ${currentTheme}`}>
+        <div className={`order ${theme}`}>
             <div className="order__top">
                 <div className="order__top-wrapper">
                     <div className="order__img-wrapper">
@@ -102,34 +107,14 @@ export default function Order({
                 </ul>
             </div>
             <div className="order__list">
-                <div className="order__list-item">
-                    <span className="order__price-name">Loading and unloading route</span>
+                {prices.map(({ label, value }) => (
+                <div className="order__list-item" key={label}>
+                    <span className="order__price-name">{label}</span>
                     <div className="order__list-item-wrapper">
-                        <span className="order__price-value">{ loadingAndUploadingPrice }</span>
-                        <span className="order__list-currency">{ currency }</span>
+                    <span className="order__price-value">{value}</span>
+                    <span className="order__list-currency">{currency}</span>
                     </div>
-                </div>
-                <div className="order__list-item">
-                    <span className="order__price-name">Forwarding services</span>
-                    <div className="order__list-item-wrapper">
-                        <span className="order__price-value">{ forwardingService }</span>
-                        <span className="order__list-currency">{ currency }</span>
-                    </div>
-                </div>
-                <div className="order__list-item">
-                    <span className="order__price-name">Payment</span>
-                    <div className="order__list-item-wrapper">
-                        <span className="order__price-value">{ payment }</span>
-                        <span className="order__list-currency">{ currency }</span>
-                    </div>
-                </div>
-                <div className="order__list-item">
-                    <span className="order__price-name">Service commission</span>
-                    <div className="order__list-item-wrapper">
-                        <span className="order__price-value">{ serviceCommission }</span>
-                        <span className="order__list-currency">{ currency }</span>
-                    </div>
-                </div>
+                </div>))}
                 <span className="order__list-item--decor"></span>
                 <div className="order__list-item order__list-item--total">
                     <span className="order__price-name order__price-name--total">Total price</span>

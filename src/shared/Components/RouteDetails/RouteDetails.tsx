@@ -1,23 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 
 import './routeDetails.scss';
 import './adaptive.scss';
 
 import { MapSVG, TrashSVG } from '../../assets/svg/svgComponents'
 
+// TYPES
+import { Route } from '../../../types/route';
+
 // COMPONENTS - FormFields
 import FormInput from '../FormFields/FormInput/FormInput';
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-type Route = {
-    title: string;
-    point: string;
-    isTrash: boolean;
-    inputValue: string;
-    hoursValue: number;
-    distanceToNext: number | null;
-}
 
 type RouteDetailsType = {
     theme?: 'light' | 'dark';

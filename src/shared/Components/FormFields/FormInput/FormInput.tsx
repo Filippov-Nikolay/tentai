@@ -63,11 +63,9 @@ export default function FormInput({
                 </span>
             </label>}
             <div className={
-                `
-                    form-input__wrapper-input 
-                    ${!isInput ? "form-input__wrapper-input--only-read" : ""}
-                    ${isInvalid ? 'form-input__wrapper-input--error' : ''}
-                `
+                `form-input__wrapper-input 
+                ${!isInput ? "form-input__wrapper-input--only-read" : ""}
+                ${isInvalid ? 'form-input__wrapper-input--error' : ''}`
                 } onClick={ !isInput ? onClick : undefined }>
                 <input 
                     type="text" 

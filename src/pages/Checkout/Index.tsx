@@ -1,44 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './styles/main.scss';
 import './styles/adaptive.scss';
 
+// TYPES
+import { 
+    Route, CargoSize
+} from '../../types/index';
+
+// VALIDATIONS
+import { validateTime, validateDate } from './utils/validation';
+
 // COMPONENTS
 import Header from '../../shared/Components/Header/Header';
 import RouteDetails from '../../shared/Components/RouteDetails/RouteDetails';
-import SubTitle from '../../shared/Components/SubTitle/SubTitle'
 import ContactInfo from '../../shared/Components/ContactInfo/ContactInfo';
 import Note from '../../shared/Components/Note/Note'
 import SwitchBtn from '../../shared/Components/SwitchBtn/SwitchBtn';
 import Order from '../../shared/Components/Order/Order';
 import PrimaryBtn from '../../shared/Components/PrimaryBtn/PrimaryBtn';
 import Footer from '../../shared/Components/Footer/Footer';
+import SectionList from './components/SectionList/SectionList';
+import FormWrapper from '../../shared/Components/FormFields/FormWrapper/FormWrapper';
+import FormInputSize from '../../shared/Components/FormFields/FormInputSize/FormInputSize';
 
 // COMPONENTS - FormFields
 import FormInput from '../../shared/Components/FormFields/FormInput/FormInput'
 import FormSelect from '../../shared/Components/FormFields/FormSelect/FormSelect';
 import FormTextArea from '../../shared/Components/FormFields/FormTextArea/FormTextArea';
 
+// HOOKS
+import usePersistentState from './hooks/usePersistentState';
+import useDebounce from './hooks/useDebounce';
+
 // SERVICES
 import { calculateDistances } from './services/apiService'
 
 // ICONS
 import { CalendarSVG, ArrowSVG, WalletSVG } from '../../shared/assets/svg/svgComponents';
-
-type Route = {
-    title: string;
-    point: string;
-    isTrash: boolean;
-    inputValue: string;
-    hoursValue: number;
-    distanceToNext: number | null;
-}
-type CargoSize = {
-    length: string;
-    weight: string;
-    height: string;
-    unit: string;
-}
 
 export default function Index({ theme='light' }) {
     // API
@@ -68,120 +67,143 @@ export default function Index({ theme='light' }) {
 
     // Общее расстояние
     const[totalDistanceKm, setTotalDistanceKm] = useState(0);
-    
     // Количество отработанных часов (загрузка + разгрузка)
     const[hoursWorked, setHoursWorked] = useState(0);
-    
     const [distanceCost, setDistanceCost] = useState(0);
     const [loadingCost, setLoadingCost] = useState(0);
     const [forwardingServicesCost, setForwardingServicesCost] = useState(0);
     const [commissionCost, setCommissionCost] = useState(0);
     const [totalSum, setTotalSum] = useState(0);
     
+    const isAllRoutesFilled = () => {
+        return currentRoutes.every(route => route.inputValue.trim() !== '');
+    };
+
     // Debounce route
-    const debounceTimerStorage = useRef<number | undefined>(undefined);
-    useEffect(() => {
-        if (debounceTimerStorage.current) {
-            clearTimeout(debounceTimerStorage.current);
-        }
+    useDebounce(() => {
+        const allInputEmpty = currentRoutes.every(route => !route.inputValue.trim());
 
-        debounceTimerStorage.current = window.setTimeout(() => {
-            localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
+        if (allInputEmpty) {
+            // Обнуляем distanceToNext во всех маршрутах
+            const clearedRoutes = currentRoutes.map(route => ({
+                ...route,
+                distanceToNext: undefined
+            }));
+            localStorage.setItem('currentRoutes', JSON.stringify(clearedRoutes));
 
-            const nonEmptyRoutes = currentRoutes.filter(route => route.inputValue?.trim());
-            if (nonEmptyRoutes.length === 0) {
-                setTotalDistanceKm(0);
-                setFirstPoint('');
-                setNameFirstPoint('');
-                setLastPoint('');
-                setNameLastPoint('');
-                return;
-            }
+            setTotalDistanceKm(0);
+            setFirstPoint('');
+            setNameFirstPoint('');
+            setLastPoint('');
+            setNameLastPoint('');
+            setHoursWorked(0);
 
-            const hours = nonEmptyRoutes.reduce(
-                (sum, item) => sum + (item.hoursValue || 0), 0
-            );
-            setHoursWorked(hours);
-
-            // Если только одна точка — решаем, она first или last
-            if (nonEmptyRoutes.length === 1) {
-                const only = nonEmptyRoutes[0];
-                const isFirst = only.point.toUpperCase() <= 'A';
-
-                console.log(only.point.toUpperCase(), isFirst);
-
-                setFirstPoint(isFirst ? only.point : '');
-                setNameFirstPoint(isFirst ? only.inputValue : '');
-                setLastPoint(!isFirst ? only.point : '');
-                setNameLastPoint(!isFirst ? only.inputValue : '');
-
-                return;
-            }
-
-            // Ищем first и last по алфавиту
-            const sortedRoutes = [...nonEmptyRoutes].sort((a, b) =>
-                a.point.localeCompare(b.point)
-            );
-
-            const first = sortedRoutes[0];
-            const last = sortedRoutes[sortedRoutes.length - 1];
-
-            setFirstPoint(first.point || '');
-            setNameFirstPoint(first.inputValue || '');
-            setLastPoint(last.point || '');
-            setNameLastPoint(last.inputValue || '');
-        }, 500);
-
-        return () => clearTimeout(debounceTimerStorage.current);
-    }, [currentRoutes]);
-
-
-    const debounceTimerCalculate = useRef<number | undefined>(undefined);
-    useEffect(() => {
-        if (debounceTimerCalculate.current) {
-            clearTimeout(debounceTimerCalculate.current);
-        }
-
-        const allField = currentRoutes.every(route => 
-            route.inputValue.trim() !== ''
-        );
-
-        if (!allField) {
             return;
         }
 
-        debounceTimerCalculate.current = window.setTimeout(() => {
-            calculateDistances(currentRoutes, setCurrentRoutes, String(ORS_API_KEY));
-        }, 500);
-    }, [currentRoutes.map(route => route.inputValue).join('||')]);
+        localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
 
-    const debounceTimerTotal = useRef<number | undefined>(undefined);
-    useEffect(() => {
-        if (debounceTimerTotal.current) {
-            clearTimeout(debounceTimerTotal.current);
-        }
+        const total = currentRoutes.reduce((sum, r) => sum + (r.hoursValue || 0), 0);
+        setHoursWorked(total);
 
-        const allField = currentRoutes.every(route => 
-            route.inputValue.trim() !== ''
-        );
+        const nonEmptyRoutes = currentRoutes.filter(route => route.inputValue?.trim());
+        
+        if (nonEmptyRoutes.length === 1) {
+            const only = nonEmptyRoutes[0];
+            const isFirst = only.point.toUpperCase() <= 'A';
 
-        if (!allField) {
+            setFirstPoint(isFirst ? only.point : '');
+            setNameFirstPoint(isFirst ? only.inputValue : '');
+            setLastPoint(!isFirst ? only.point : '');
+            setNameLastPoint(!isFirst ? only.inputValue : '');
+
             return;
         }
 
-        debounceTimerTotal.current = window.setTimeout(() => {
-            const total = currentRoutes.reduce(
-                (sum, item) => sum + (item.distanceToNext || 0), 0
-            );
+        const sortedRoutes = [...nonEmptyRoutes].sort((a, b) => a.point.localeCompare(b.point));
 
-            setTotalDistanceKm(Number(total.toFixed(2)));
-        }, 500);
-    }, [currentRoutes.map(route => route.distanceToNext).join('||')]);
+        const first = sortedRoutes[0];
+        const last = sortedRoutes[sortedRoutes.length - 1];
+
+        setFirstPoint(first.point || '');
+        setNameFirstPoint(first.inputValue || '');
+        setLastPoint(last.point || '');
+        setNameLastPoint(last.inputValue || '');
+    }, [currentRoutes], 500);
+
+
+    useDebounce(() => {
+        if (!isAllRoutesFilled()) { return; }
+
+        calculateDistances(currentRoutes, setCurrentRoutes, String(ORS_API_KEY));
+    }, [currentRoutes.map(route => route.inputValue).join('||')], 500);
+
+    useDebounce(() => {
+        // const allFilled = currentRoutes.every(route => 
+        //     route.hoursValue > 0
+        // );
+        // if (!allFilled) { return };
+
+        const total = currentRoutes.reduce((sum, item) => 
+            sum + (item.distanceToNext || 0), 0
+        );
+        setTotalDistanceKm(Number(total.toFixed(2)));
+    }, [currentRoutes.map(route => route.distanceToNext).join('||')], 500);
+
+    // ABOUT
+    const[dateOfUpload, setDateOfUpload] = usePersistentState('dateOfUpload', '');
+    const [timeOfArrival, setTimeOfArrival] = usePersistentState('timeOfArrival', '');
+    const [cargoWeight, setCargoWeight] = usePersistentState('cargoWeight', '0');
+    const [typeOfCargo, setTypeOfCargo] = usePersistentState('typeOfCargo', '');
+    const [cargoSize, setCargoSize] = usePersistentState<CargoSize>('cargoSize', {
+        length: '', weight: '', height: '', unit: ''
+    });
+    const [forwardingService, setForwardingService] = usePersistentState('forwardingService', false);
+
+    // LEAVE A COMMENT
+    const [inputComment, setInputComment] = usePersistentState('inputComment', '');
+
+    // CONTACT INFORMATION
+    const [contact, setContact] = usePersistentState('contact', {
+        fullName: '', email: '', phoneNumber: ''
+    });
+    const [isEdit, setIsEdit] = usePersistentState('isEdit', false);
+
+    const handleChange = () => {
+        alert("Данные отправлены!");
+
+        let result = [
+            {
+                "title": "route",
+                "currentRoutes": currentRoutes
+            },
+            {
+                "title": "about",
+                "dateOfUpload": dateOfUpload,
+                "timeOfArrival": timeOfArrival,
+                "cargoWeight": cargoWeight,
+                "typeOfCargo": typeOfCargo,
+                "cargoSize": cargoSize,
+                "forwardingService": forwardingService,
+                "totalPrice": totalSum
+            },
+            {
+                "title": "leaveComment",
+                "comment": inputComment
+            },
+            {
+                "title": "contactInformation",
+                "contact": contact
+            }
+        ];
+
+        console.log(result);
+    }
 
     useEffect(() => {
         const newDistanceCost = Math.round(totalDistanceKm * costPerKm * 100) / 100;
         const newLoadingCost = Math.round(hoursWorked * costPerHourLoading * 100) / 100;
-        const newForwardingCost = Math.round(newDistanceCost * forwardingServiceRate * 100) / 100;
+        const newForwardingCost = forwardingService ? Math.round(newDistanceCost * forwardingServiceRate * 100) / 100 : 0;
         const newCommissionCost = Math.round(newDistanceCost * commissionRate * 100) / 100;
         const newTotalSum = newDistanceCost + newLoadingCost + newForwardingCost + newCommissionCost;
 
@@ -190,116 +212,13 @@ export default function Index({ theme='light' }) {
         setForwardingServicesCost(newForwardingCost);
         setCommissionCost(newCommissionCost);
         setTotalSum(Number(newTotalSum.toFixed(2)));
-    }, [totalDistanceKm, hoursWorked, costPerKm, costPerHourLoading, forwardingServiceRate, commissionRate]);
-
-    // ABOUT
-    const[dateOfUpload, setDateOfUpload] = useState(() => 
-        localStorage.getItem('dateOfUpload') || ''
-    );
-    useEffect(() => {
-        localStorage.setItem('dateOfUpload', dateOfUpload);
-    }, [dateOfUpload]);
-
-    const [timeOfArrival, setTimeOfArrival] = useState(() => 
-        localStorage.getItem('timeOfArrival') || ''
-    );
-    useEffect(() => {
-        localStorage.setItem('timeOfArrival', timeOfArrival);
-    }, [timeOfArrival]);
-
-    const [cargoWeight, setCargoWeight] = useState(() => 
-        localStorage.getItem('cargoWeight') || "0"
-    );
-    useEffect(() => {
-        localStorage.setItem('cargoWeight', cargoWeight);
-    }, [cargoWeight]);
-
-    const [typeOfCargo, setTypeOfCargo] = useState(() => 
-        localStorage.getItem('typeOfCargo') || ''
-    );
-    useEffect(() => {
-        localStorage.setItem('typeOfCargo', typeOfCargo);
-    }, [typeOfCargo]);
-
-    const [cargoSize, setCargoSize] = useState<CargoSize>(() => {
-        const saved = localStorage.getItem('cargoSize');
-        return saved ? JSON.parse(saved) : { length: '', weight: '', height: '', unit: '' };
-    });
-    useEffect(() => {
-        localStorage.setItem('cargoSize', JSON.stringify(cargoSize));
-    }, [cargoSize]);
-
-    const [forwardingService, setForwardingService] = useState(() => {
-        const saved = localStorage.getItem('forwardingService');
-        return saved === 'true';
-    });
-    useEffect(() => {
-        localStorage.setItem('forwardingService', forwardingService ? 'true' : 'false');
-    }, [forwardingService]);
-
-    // LEAVE A COMMENT
-    const [inputComment, setInputComment] = useState(() => 
-        localStorage.getItem('inputComment') || ''
-    );
-    useEffect(() => {
-        localStorage.setItem('inputComment', inputComment);
-    }, [inputComment]);
-
-    // CONTACT INFORMATION
-    const [contact, setContact] = useState(() => {
-        const saved = localStorage.getItem('contact');
-        return saved ? JSON.parse(saved) : { fullName: '', email: '', phoneNumber: '' };
-    });
-    useEffect(() => {
-        localStorage.setItem('contact', JSON.stringify(contact));
-    }, [contact]);
-
-    const [isEdit, setIsEdit] = useState(() => {
-        const saved = localStorage.getItem('isEdit');
-        return saved === 'true';
-    });
-    useEffect(() => {
-        localStorage.setItem('isEdit', isEdit ? 'true' : 'false');
-    }, [isEdit]);
-
-
-    const handleChange = () => {
-        alert("Данные отправлены!");
-        console.log(result);
-    }
-
-    const validateDate = (val: string) => {
-        if (val === '') return true;
-
-        const dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
-        if (!dateRegex.test(val)) return false;
-
-        const [d, m, y] = val.split('.').map(Number);
-        const inputDate = new Date(y, m - 1, d);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (
-            inputDate.getDate() !== d ||
-            inputDate.getMonth() !== m - 1 ||
-            inputDate.getFullYear() !== y
-        ) { return false; }
-
-        return inputDate >= today;
-    };
+    }, [totalDistanceKm, hoursWorked, costPerKm, costPerHourLoading, forwardingServiceRate, forwardingService, commissionRate]);
 
     const [isInvalid, setIsInvalid] = useState(false);
-    const handelSetDateOfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSetDateOfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setDateOfUpload(val);
         setIsInvalid(!validateDate(val));
-    };
-
-
-    const validateTime = (val: string): boolean => {
-        if (val === '') return true;
-        const timeRegex = /^([01]?\d|2[0-3]):([0-5]?\d)$/;
-        return timeRegex.test(val);
     };
 
     const [isTimeInvalid, setIsTimeInvalid] = useState(false);
@@ -309,51 +228,27 @@ export default function Index({ theme='light' }) {
         setIsTimeInvalid(!validateTime(val));
     };
 
-    const [isOrder, setIsOrder] = useState(false);
+    const [isDisabledSubmit, setIsDisabledSubmit] = useState(false);
     useEffect(() => {
-        const allFilledRoutes = currentRoutes.every(route => 
-            route.inputValue.trim() !== '' && 
-            route.hoursValue !== null &&
-            route.hoursValue !== undefined
+        const allFilled = isAllRoutesFilled() && currentRoutes.every(route => 
+            route.hoursValue !== null && 
+            route.hoursValue !== undefined &&
+            route.hoursValue > 0
         );
 
         if (
             dateOfUpload.length === 0 || 
             timeOfArrival.length === 0 || 
-            contact.fullName.length === 0 ||
+            !contact.fullName?.trim() ||
             contact.email.length === 0 ||
             contact.phoneNumber.length === 0 ||
-            !allFilledRoutes
+            !allFilled
         ) {
-            setIsOrder(true);
+            setIsDisabledSubmit(true);
         } else {
-            setIsOrder(false);
+            setIsDisabledSubmit(false);
         }
     }, [dateOfUpload, timeOfArrival, contact, currentRoutes]);
-
-    let result = [
-        {
-            "title": "route",
-            "currentRoutes": currentRoutes
-        },
-        {
-            "title": "about",
-            "dateOfUpload": dateOfUpload,
-            "timeOfArrival": timeOfArrival,
-            "cargoWeight": cargoWeight,
-            "typeOfCargo": typeOfCargo,
-            "cargoSize": cargoSize,
-            "forwardingService": forwardingService
-        },
-        {
-            "title": "leaveComment",
-            "comment": inputComment
-        },
-        {
-            "title": "contactInformation",
-            "contact": contact
-        }
-    ]
 
     const[isShowRightBar, setIsShowRightBar] = useState(false);
     const handleChangeShowLeftBar = () => {
@@ -369,11 +264,14 @@ export default function Index({ theme='light' }) {
     }, [isOpen]);
 
     useEffect(() => {
+        const BREAKPOINT_RIGHT_BAR = 805;
+        const BREAKPOINT_MENU = 990;
+
         const handleResize = () => {
-            if (window.innerWidth > 805) {
+            if (window.innerWidth > BREAKPOINT_RIGHT_BAR) {
                 setIsShowRightBar(false);
             }
-            if (window.innerWidth > 990) {
+            if (window.innerWidth > BREAKPOINT_MENU) {
                 setIsOpen(false);
             }
         };
@@ -402,213 +300,183 @@ export default function Index({ theme='light' }) {
                     </button>
                 </div>
                 <div className="index__wrapper">
-                    <div className={`index__left-bar ${theme} ${isShowRightBar ? "index__left-bar--hidden" : ""}`}>
-                        {/* ROUTE */}
-                        <section className="index__section">
-                            <div className="index__sub-title">
-                                <SubTitle 
-                                    text={ "Route" }
-                                />
-                            </div>
-                            <div className="index__route-details">
-                                <RouteDetails
-                                    theme={ currentTheme }
-                                    routesData={ currentRoutes }
-                                    onRoutesChange={ setCurrentRoutes }
-                                />
-                            </div>
-                        </section>
-
-                        {/* ABOUT THE CARGO */}
-                        <section className="index__section">
-                            <div className="index__sub-title">
-                                <SubTitle 
-                                    text={ "About the cargo" }
-                                />
-                            </div>
-                            <div className="index__about">
-                                <div className="index__about-item">
-                                    <FormInput
-                                        label={ "Date of upload" }
-                                        placeholder={ "dd.mm.yyyy" }
-                                        iconSVG={ <CalendarSVG/> }
-                                        value={ dateOfUpload }
-                                        onChange={ handelSetDateOfUpload }
-                                        pattern="\d{0,2}(\.\d{0,2}(\.\d{0,4})?)?"
-                                        isInvalid={ isInvalid }
-                                        errorText='Incorrect date'
-                                    />
-                                </div>
-                                <div className="index__about-item">
-                                    <FormInput
-                                        label={ "Time of arrival" }
-                                        placeholder={ "00:00" }
-                                        value={ timeOfArrival }
-                                        onChange={ handleSetTimeOfArrival }
-                                        isInvalid={ isTimeInvalid }
-                                        pattern="\d{0,2}(\:\d{0,2}?)?"
-                                        errorText='Incorrect time'
-                                    />
-                                </div>
-                                <div className="index__about-item">
-                                    <FormInput
-                                        label={ "Cargo weight (kg)" }
-                                        placeholder={ "0" }
-                                        isRequirement={ false }
-                                        value={ cargoWeight }
-                                        onChange={ (e) => setCargoWeight(e.target.value) }
-                                        pattern="\d*"
-                                    />
-                                </div>
-                                <div className="index__about-item">
-                                    <FormSelect
-                                        label={ "Type of cargo" }
-                                        placeholder={ "Placeholder" }
-                                        isRequirement={ false }
-                                        iconSVG={ <ArrowSVG/> }
-                                        options={ ["test 1", "test 2", "test 3"] }
-                                        value={ typeOfCargo }
-                                        onChange={ (e) => setTypeOfCargo(e) }
-                                    />
-                                </div>
-                                <div className="index__about-item">
-                                    <span className="index__about-span">Cargo size of the LWH (m)</span>
-                                    <div className="index__about-wrapper">
-                                        <FormInput
-                                            placeholder={ "105" }
-                                            isRequirement={ false }
-                                            value={ cargoSize.length }
-                                            onChange={ (e) => setCargoSize(prev => ({ ...prev, length: e.target.value })) }
+                    <div className={`index__left-bar ${isShowRightBar ? "index__left-bar--hidden" : ""}`}>
+                        <SectionList
+                            theme={currentTheme}
+                            sections={[
+                                {
+                                    title: "Route",
+                                    content: (
+                                        <RouteDetails
+                                            theme={ currentTheme }
+                                            routesData={ currentRoutes }
+                                            onRoutesChange={ setCurrentRoutes }
                                         />
-                                        <span className="index__about-wrapper-element">x</span>  
-                                        <FormInput
-                                            placeholder={ "105" }
-                                            isRequirement={ false }
-                                            value={ cargoSize.weight }
-                                            onChange={ (e) => setCargoSize(prev => ({ ...prev, weight: e.target.value })) }
+                                    )
+                                },
+                                {
+                                    title: "About the cargo",
+                                    content: (
+                                        <FormWrapper
+                                            theme={currentTheme}
+                                            componentsInput={[
+                                                <FormInput
+                                                    theme={currentTheme}
+                                                    label={ "Date of upload" }
+                                                    placeholder={ "dd.mm.yyyy" }
+                                                    iconSVG={ <CalendarSVG/> }
+                                                    value={ dateOfUpload }
+                                                    onChange={ handleSetDateOfUpload }
+                                                    pattern="\d{0,2}(\.\d{0,2}(\.\d{0,4})?)?"
+                                                    isInvalid={ isInvalid }
+                                                    errorText='Incorrect date'
+                                                />,
+                                                <FormInput
+                                                    theme={currentTheme}
+                                                    label={ "Time of arrival" }
+                                                    placeholder={ "00:00" }
+                                                    value={ timeOfArrival }
+                                                    onChange={ handleSetTimeOfArrival }
+                                                    isInvalid={ isTimeInvalid }
+                                                    pattern="\d{0,2}(\:\d{0,2}?)?"
+                                                    errorText='Incorrect time'
+                                                />,
+                                                <FormInput
+                                                    theme={currentTheme}
+                                                    label={ "Cargo weight (kg)" }
+                                                    placeholder={ "0" }
+                                                    isRequirement={ false }
+                                                    value={ cargoWeight }
+                                                    onChange={ (e) => setCargoWeight(e.target.value) }
+                                                    pattern="\d*"
+                                                />,
+                                                <FormSelect
+                                                    theme={currentTheme}
+                                                    label={ "Type of cargo" }
+                                                    placeholder={ "Placeholder" }
+                                                    isRequirement={ false }
+                                                    iconSVG={ <ArrowSVG/> }
+                                                    options={ ["test 1", "test 2", "test 3"] }
+                                                    value={ typeOfCargo }
+                                                    onChange={ (e) => setTypeOfCargo(e) }
+                                                />,
+                                                <FormInputSize
+                                                    theme={currentTheme}
+                                                    label={"Cargo size of the LWH (m)"}
+                                                    componentsInput={[
+                                                        <FormInput
+                                                            placeholder={ "105" }
+                                                            isRequirement={ false }
+                                                            value={ cargoSize.length }
+                                                            onChange={ (e) => setCargoSize(prev => ({ ...prev, length: e.target.value })) }
+                                                        />,
+                                                        <FormInput
+                                                            placeholder={ "105" }
+                                                            isRequirement={ false }
+                                                            value={ cargoSize.weight }
+                                                            onChange={ (e) => setCargoSize(prev => ({ ...prev, weight: e.target.value })) }
+                                                        />,
+                                                        <FormInput
+                                                            placeholder={ "105" }
+                                                            isRequirement={ false }
+                                                            value={ cargoSize.height }
+                                                            onChange={ (e) => setCargoSize(prev => ({ ...prev, height: e.target.value })) }
+                                                        />
+                                                    ]}
+                                                    units={["cm", "mm", "dm"]}
+                                                    value={ cargoSize.unit }
+                                                    onChange={ (e: string) => setCargoSize(prev => ({ ...prev, unit: e })) }
+                                                />,
+                                                <SwitchBtn
+                                                    theme={currentTheme}
+                                                    label={"Forwarding service"}
+                                                    onSwitch={ setForwardingService }
+                                                    value={ forwardingService }               
+                                                />
+                                            ]}
                                         />
-                                        <span className="index__about-wrapper-element">x</span>  
-                                        <FormInput
-                                            placeholder={ "105" }
-                                            isRequirement={ false }
-                                            value={ cargoSize.height }
-                                            onChange={ (e) => setCargoSize(prev => ({ ...prev, height: e.target.value })) }
+                                    )
+                                },
+                                {
+                                    title: "Leave a comment",
+                                    content: (
+                                        <FormTextArea
+                                            theme={ currentTheme }
+                                            onChange={ (e) => setInputComment(e.target.value) }
+                                            value={ inputComment }
                                         />
-                                        <FormSelect
-                                            iconSVG={ <ArrowSVG/> }
-                                            isRequirement={ false }
-                                            options={ ["cm", "mm", "dm"] }
-                                            defaultOptionIndex={ 0 }
-                                            isInput={ false }
-                                            value={ cargoSize.unit }
-                                            onChange={ (e) => setCargoSize(prev => ({ ...prev, unit: e })) }
-                                        />  
-                                    </div>
-                                </div>
-                                <div className="index__about-item">
-                                    <div className="index__about-wrapper index__about-wrapper--center">
-                                        <span className="index__about-text">Forwarding service</span>
-                                        <SwitchBtn
-                                            onSwitch={ setForwardingService }
-                                            value={ forwardingService }                                           
+                                    )
+                                },
+                                {
+                                    title: "Contact information",
+                                    content: (
+                                        <ContactInfo
+                                            contact={ contact } 
+                                            setContact={ setContact }
+                                            onEditChange={ setIsEdit }
+                                            isEditDef={ isEdit }
                                         />
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* LEAVE A COMMENT */}
-                        <section className="index__section">
-                            <div className="index__sub-title">
-                                <SubTitle 
-                                    text={ "Leave a comment" }
-                                />
-                            </div>
-                            <div className="index__comment">
-                                    <FormTextArea
-                                        theme={ currentTheme }
-                                        onChange={ (e) => setInputComment(e.target.value) }
-                                        value={ inputComment }
-                                    />
-                                </div>
-                        </section>
-
-                        {/* CONTACT INFORMATION */}
-                        <section className="index__section">
-                            <div className="index__sub-title">
-                                <SubTitle 
-                                    text={ "Contact information" }
-                                />
-                            </div>
-                            <div className="index__contact-info">
-                                <ContactInfo
-                                    contact={ contact } 
-                                    setContact={ setContact }
-                                    onEditChange={ setIsEdit }
-                                    isEditDef={ isEdit }
-                                />
-                            </div>
-                        </section>
-
-                        {/* PAYMENT */}
-                        <section className="index__section">
-                            <div className="index__sub-title">
-                                <SubTitle 
-                                    text={ "Payment" }
-                                />
-                            </div>
-                            <div className="index__payment">
-                                <Note
-                                    theme={ currentTheme }
-                                    component={ <WalletSVG/> }
-                                    title={ "Payment on receipt" }
-                                    text={ "Avoid online transactions and pay only when you receive your order. This will guarantee your financial security and avoid any risks associated with electronic payments." }
-                                />
-                            </div>
-                        </section>
+                                    )
+                                },
+                                {
+                                    title: "Payment",
+                                    content: (
+                                        <Note
+                                            theme={ currentTheme }
+                                            component={ <WalletSVG/> }
+                                            title={ "Payment on receipt" }
+                                            text={ "Avoid online transactions and pay only when you receive your order. This will guarantee your financial security and avoid any risks associated with electronic payments." }
+                                        />
+                                    )
+                                }
+                            ]}
+                        />
                     </div>
                     <div className={`index__right-bar ${isShowRightBar ? "index__right-bar--show" : ""}`}>
-                        <div className="index__sub-title">
-                            <SubTitle 
-                                text={ "Order" }
-                            />
-                        </div>
-                        <Order
-                            title={ "Ecological cleaning and maintenance services for home" }
-                            currency={ "THB" }
-                            location={ "Bangkok" }
-                            rating={ 5.0 }
-                            bannerText={ "top seller" }
+                        <SectionList
+                            theme = {currentTheme}
+                            sections={[
+                                {
+                                    title: "Order",
+                                    content: (
+                                        <Order
+                                            title={ "Ecological cleaning and maintenance services for home" }
+                                            currency={ "THB" }
+                                            location={ "Bangkok" }
+                                            rating={ 5.0 }
+                                            bannerText={ "top seller" }
 
-                            firstPoint={ firstPoint }
-                            lastPoint={ lastPoint }
-                            nameFirstPoint={ nameFirstPoint }
-                            nameLastPoint={ nameLastPoint }
+                                            firstPoint={ firstPoint }
+                                            lastPoint={ lastPoint }
+                                            nameFirstPoint={ nameFirstPoint }
+                                            nameLastPoint={ nameLastPoint }
 
-                            loadingAndUploadingPrice={ loadingCost }
-                            payment={ distanceCost }
-                            forwardingService={ forwardingServicesCost }
-                            serviceCommission={ commissionCost }
-                            totalPrice={ totalSum }
+                                            loadingAndUploadingPrice={ loadingCost }
+                                            payment={ distanceCost }
+                                            forwardingService={ forwardingServicesCost }
+                                            serviceCommission={ commissionCost }
+                                            totalPrice={ totalSum }
 
-                            isDisabled={ isOrder }
+                                            isDisabled={ isDisabledSubmit }
 
-                            onClick={ handleChange }
+                                            onClick={ handleChange }
+                                        />
+                                    )
+                                }
+                            ]}
                         />
                     </div>
                     <div className={`index__primary-btn ${isShowRightBar ? "index__primary-btn--hidden" : ""}`}>
                         <PrimaryBtn
                             text={ "Continue" }
-                            // isDisabled={ isOrder }
+                            isDisabled={ isDisabledSubmit }
                             onClick={ handleChangeShowLeftBar }
                         />
                     </div>
                 </div>
             </div>
             <div className={`index__footer ${isShowRightBar ? "index__footer--hidden" : ""}`}>
-                <Footer 
-                    theme={ currentTheme } 
-                />
+                <Footer theme={ currentTheme } />
             </div>
         </>
     )
