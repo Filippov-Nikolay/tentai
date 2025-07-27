@@ -18,12 +18,20 @@ export const calculateDistances = async(
         const addresses = routes.map(r => r.inputValue).filter(Boolean);
         const coords = await Promise.all(addresses.map(addr => geocodeAddress(addr, ORS_API_KEY)));
         const matrix = await calculateORSMatrix(coords, ORS_API_KEY);
-        const updatedRoutes = [...routes];
+        const updatedRoutes = routes.map((route, index) => {
+        let distanceToNext = route.distanceToNext;
+            if (index < coords.length - 1) {
+                const distance = matrix.distances[index][index + 1];
+                distanceToNext = Number(distance.toFixed(2));
+            } else {
+                distanceToNext = -1;
+            }
 
-        for(let i = 0; i < coords.length - 1; i++) {
-            const distance = matrix.distances[i][i + 1];
-            updatedRoutes[i].distanceToNext = Number(distance.toFixed(2));
-        }
+            return {
+                ...route,
+                distanceToNext,
+            };
+        });
 
         if (updatedRoutes.length > 0) {
             updatedRoutes[updatedRoutes.length - 1].distanceToNext = -1;

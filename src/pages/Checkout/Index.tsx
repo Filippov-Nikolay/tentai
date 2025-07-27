@@ -65,10 +65,19 @@ export default function Index({ theme='light' }) {
             { title: 'Place of unloading', point: 'B', isTrash: false, inputValue: '', hoursValue: 0, distanceToNext: null },
         ];
     });
-    let filledLast = [...currentRoutes].reverse().find(route =>
-        route.inputValue?.trim() && route.hoursValue
-    );
 
+    // Общее расстояние
+    const[totalDistanceKm, setTotalDistanceKm] = useState(0);
+    
+    // Количество отработанных часов (загрузка + разгрузка)
+    const[hoursWorked, setHoursWorked] = useState(0);
+    
+    const [distanceCost, setDistanceCost] = useState(0);
+    const [loadingCost, setLoadingCost] = useState(0);
+    const [forwardingServicesCost, setForwardingServicesCost] = useState(0);
+    const [commissionCost, setCommissionCost] = useState(0);
+    const [totalSum, setTotalSum] = useState(0);
+    
     // Debounce route
     const debounceTimerStorage = useRef<number | undefined>(undefined);
     useEffect(() => {
@@ -78,10 +87,54 @@ export default function Index({ theme='light' }) {
 
         debounceTimerStorage.current = window.setTimeout(() => {
             localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
-        }, 1000);
+
+            const nonEmptyRoutes = currentRoutes.filter(route => route.inputValue?.trim());
+            if (nonEmptyRoutes.length === 0) {
+                setTotalDistanceKm(0);
+                setFirstPoint('');
+                setNameFirstPoint('');
+                setLastPoint('');
+                setNameLastPoint('');
+                return;
+            }
+
+            const hours = nonEmptyRoutes.reduce(
+                (sum, item) => sum + (item.hoursValue || 0), 0
+            );
+            setHoursWorked(hours);
+
+            // Если только одна точка — решаем, она first или last
+            if (nonEmptyRoutes.length === 1) {
+                const only = nonEmptyRoutes[0];
+                const isFirst = only.point.toUpperCase() <= 'A';
+
+                console.log(only.point.toUpperCase(), isFirst);
+
+                setFirstPoint(isFirst ? only.point : '');
+                setNameFirstPoint(isFirst ? only.inputValue : '');
+                setLastPoint(!isFirst ? only.point : '');
+                setNameLastPoint(!isFirst ? only.inputValue : '');
+
+                return;
+            }
+
+            // Ищем first и last по алфавиту
+            const sortedRoutes = [...nonEmptyRoutes].sort((a, b) =>
+                a.point.localeCompare(b.point)
+            );
+
+            const first = sortedRoutes[0];
+            const last = sortedRoutes[sortedRoutes.length - 1];
+
+            setFirstPoint(first.point || '');
+            setNameFirstPoint(first.inputValue || '');
+            setLastPoint(last.point || '');
+            setNameLastPoint(last.inputValue || '');
+        }, 500);
 
         return () => clearTimeout(debounceTimerStorage.current);
     }, [currentRoutes]);
+
 
     const debounceTimerCalculate = useRef<number | undefined>(undefined);
     useEffect(() => {
@@ -90,8 +143,7 @@ export default function Index({ theme='light' }) {
         }
 
         const allField = currentRoutes.every(route => 
-            route.inputValue.trim() !== '' &&
-            route.hoursValue >= 0
+            route.inputValue.trim() !== ''
         );
 
         if (!allField) {
@@ -99,18 +151,46 @@ export default function Index({ theme='light' }) {
         }
 
         debounceTimerCalculate.current = window.setTimeout(() => {
-            console.log("TRUE — данные готовы")
-
-            setFirstPoint(currentRoutes[0].point);
-            setNameFirstPoint(currentRoutes[0].inputValue);
-
-            setLastPoint(String(filledLast?.point));
-            setNameLastPoint(String(filledLast?.inputValue));
-
             calculateDistances(currentRoutes, setCurrentRoutes, String(ORS_API_KEY));
-        }, 2000);
+        }, 500);
     }, [currentRoutes.map(route => route.inputValue).join('||')]);
 
+    const debounceTimerTotal = useRef<number | undefined>(undefined);
+    useEffect(() => {
+        if (debounceTimerTotal.current) {
+            clearTimeout(debounceTimerTotal.current);
+        }
+
+        const allField = currentRoutes.every(route => 
+            route.inputValue.trim() !== ''
+        );
+
+        if (!allField) {
+            return;
+        }
+
+        debounceTimerTotal.current = window.setTimeout(() => {
+            const total = currentRoutes.reduce(
+                (sum, item) => sum + (item.distanceToNext || 0), 0
+            );
+
+            setTotalDistanceKm(Number(total.toFixed(2)));
+        }, 500);
+    }, [currentRoutes.map(route => route.distanceToNext).join('||')]);
+
+    useEffect(() => {
+        const newDistanceCost = Math.round(totalDistanceKm * costPerKm * 100) / 100;
+        const newLoadingCost = Math.round(hoursWorked * costPerHourLoading * 100) / 100;
+        const newForwardingCost = Math.round(newDistanceCost * forwardingServiceRate * 100) / 100;
+        const newCommissionCost = Math.round(newDistanceCost * commissionRate * 100) / 100;
+        const newTotalSum = newDistanceCost + newLoadingCost + newForwardingCost + newCommissionCost;
+
+        setDistanceCost(newDistanceCost);
+        setLoadingCost(newLoadingCost);
+        setForwardingServicesCost(newForwardingCost);
+        setCommissionCost(newCommissionCost);
+        setTotalSum(Number(newTotalSum.toFixed(2)));
+    }, [totalDistanceKm, hoursWorked, costPerKm, costPerHourLoading, forwardingServiceRate, commissionRate]);
 
     // ABOUT
     const[dateOfUpload, setDateOfUpload] = useState(() => 
@@ -182,6 +262,11 @@ export default function Index({ theme='light' }) {
         localStorage.setItem('isEdit', isEdit ? 'true' : 'false');
     }, [isEdit]);
 
+
+    const handleChange = () => {
+        alert("Данные отправлены!");
+        console.log(result);
+    }
 
     const validateDate = (val: string) => {
         if (val === '') return true;
@@ -270,41 +355,10 @@ export default function Index({ theme='light' }) {
         }
     ]
 
-    // Общее расстояние
-    let totalDistanceKm = 0;  
-    
-    // Количество отработанных часов (загрузка + разгрузка)
-    let hoursWorked = 0;                   
-    
-    currentRoutes.forEach(item => {
-        totalDistanceKm += item.distanceToNext || 0
-        hoursWorked += item.hoursValue || 0;
-    });
-
-    // Стоимость за общее расстояние
-    let distanceCost = Math.round(totalDistanceKm * costPerKm * 100) / 100;
-
-    // Cтоимость работы по загрузке/разгрузке
-    let loadingCost = Math.round(hoursWorked * costPerHourLoading * 100) / 100;
-
-    const handleChange = () => {
-        alert("Данные отправлены!");
-        console.log(result);
-    }
-
     const[isShowRightBar, setIsShowRightBar] = useState(false);
     const handleChangeShowLeftBar = () => {
         setIsShowRightBar(!isShowRightBar);
     }
-
-    // Стоимость за экспедиторские услуги
-    const forwardingServicesCost = Math.round(distanceCost * forwardingServiceRate * 100) / 100;
-
-    // Комиссия 
-    const commissionCost = Math.round(distanceCost * commissionRate * 100) / 100;
-
-    // Общая сумма к оплате
-    const totalSum = distanceCost + loadingCost;
 
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => {
