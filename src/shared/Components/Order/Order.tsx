@@ -25,6 +25,7 @@ type OrderProps = {
     lastPoint?: string;
     nameFirstPoint?: string;
     nameLastPoint?: string;
+    timeArrival?: string;
 
     component?: React.ReactNode;
 
@@ -52,6 +53,7 @@ export default function Order({
     lastPoint = "",
     nameFirstPoint = "",
     nameLastPoint = "",
+    timeArrival,
 
     component,
 
@@ -106,7 +108,7 @@ export default function Order({
                     </li>
                     <li className="order__point-list-item">
                         <span className="order__point">Point { lastPoint }</span>
-                        <span className="order__path">{ nameLastPoint }</span>
+                        <span className="order__path">{ nameLastPoint && `${nameLastPoint}, ${timeArrival} PM` }</span>
                     </li>
                 </ul>
             </div>

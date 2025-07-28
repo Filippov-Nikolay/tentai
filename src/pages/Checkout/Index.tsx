@@ -449,6 +449,7 @@ export default function Index({ theme='light' }) {
                                             lastPoint={ lastPoint }
                                             nameFirstPoint={ nameFirstPoint }
                                             nameLastPoint={ nameLastPoint }
+                                            timeArrival={timeOfArrival}
 
                                             component = {
                                                 <ContactInfo
