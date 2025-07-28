@@ -142,7 +142,7 @@ export default function Index({ theme='light' }) {
         if (!isAllRoutesFilled()) { return; }
 
         calculateDistances(currentRoutes, setCurrentRoutes, String(ORS_API_KEY));
-    }, [currentRoutes.map(route => route.inputValue).join('||')], 200);
+    }, [currentRoutes.map(route => route.inputValue).join('||')], 400);
 
     useDebounce(() => {
         const total = currentRoutes.reduce((sum, item) => 
