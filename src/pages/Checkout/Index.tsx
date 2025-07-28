@@ -88,6 +88,9 @@ export default function Index({ theme='light' }) {
     useDebounce(() => {
         const allInputEmpty = currentRoutes.every(route => !route.inputValue.trim());
 
+        const total = currentRoutes.reduce((sum, r) => sum + (r.hoursValue || 0), 0);
+        setHoursWorked(total);
+
         if (allInputEmpty) {
             const clearedRoutes = currentRoutes.map(route => ({
                 ...route,
@@ -100,15 +103,14 @@ export default function Index({ theme='light' }) {
             setNameFirstPoint('');
             setLastPoint('');
             setNameLastPoint('');
-            setHoursWorked(0);
+            // setHoursWorked(0);
 
             return;
         }
 
         localStorage.setItem('currentRoutes', JSON.stringify(currentRoutes));
 
-        const total = currentRoutes.reduce((sum, r) => sum + (r.hoursValue || 0), 0);
-        setHoursWorked(total);
+        
 
         const nonEmptyRoutes = currentRoutes.filter(route => route.inputValue?.trim());
         
