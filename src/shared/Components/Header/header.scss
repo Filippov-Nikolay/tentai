@@ -26,27 +26,22 @@
     filter: drop-shadow(0px 4px 15px rgba(0, 0, 0, 0.1));
 
     overflow-x: clip;
-}
-.header__wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* gap: 24px; */
-    gap: 19px;
 
-    padding: 20px 0;
-}
-.header__logo {
-    max-width: 40px;
-    max-height: 40px;
-    width: 100%;
-    height: 100%;
-}
-.logo {
-}
-.logo__img {
-}
-.header__btn-categories {
+    &__wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* gap: 24px; */
+        gap: 19px;
+
+        padding: 20px 0;
+    }
+    &__logo {
+        max-width: 40px;
+        max-height: 40px;
+        width: 100%;
+        height: 100%;
+    }
 }
 .btn-categories {
     display: flex;
@@ -58,49 +53,46 @@
     min-width: max-content;
     
     color: var(--color-categories);
-}
-.btn-categories__svg {
-    max-width: 20px;
-    max-height: 20px;
-}
-.btn-categories__text {
-    color: inherit;
-    font-size: 14px;
-    font-weight: bold;
+
+    &__svg {
+        max-width: 20px;
+        max-height: 20px;
+    }
+    &__text {
+        color: inherit;
+        font-size: 14px;
+        font-weight: bold;
+    }
 }
 .header__search {
     max-width: 450px;
     width: 100%;
 }
 .search-form {
-}
-.search-form__wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    &__wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
 
-    padding: 10px;
-    width: 100%;
+        padding: 10px;
+        width: 100%;
 
-    border: 1px solid var(--color-border-search);
-    border-radius: 10px;
-}
-.search-form__svg {
-    max-width: 16px;
-    max-height: 16px;
-}
-.search-form__svg svg {
-}
-.search-form__svg path {
-}
-.search-form__input {
-    width: 100%;
+        border: 1px solid var(--color-border-search);
+        border-radius: 10px;
+    }
+    &__svg {
+        max-width: 16px;
+        max-height: 16px;
+    }
+    &__input {
+        width: 100%;
 
-    font-size: 14px;
-    color: var(--color-text-input);
-}
-.search-form__input::placeholder {
-    color: var(--color-placeholder);
+        font-size: 14px;
+        color: var(--color-text-input);
+    }
+    &__input::placeholder {
+        color: var(--color-placeholder);
+    }
 }
 .header__menu-burger {
     display: none;
@@ -109,10 +101,11 @@
     display: flex;
     align-items: center;
     gap: 24px;
-}
-.header__right-bar--active {
-    height: 0;
-    background-color: var(--bg-color-header);
+
+    &__right-bar--active {
+        height: 0;
+        background-color: var(--bg-color-header);
+    }
 }
 .backdrop {
     display: none;
@@ -128,28 +121,21 @@
 
     z-index: 1;
 }
-.header__prizes {
-}
 .prizes {
     display: flex;
     align-items: center;
     gap: 5px;
 
     min-width: max-content;
-}
-.prizes__svg {
-}
-.prizes__text {
-    font-size: 14px;
-    font-weight: bold;
 
-    background: linear-gradient(-71deg, #D128A1, #FF6600);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-.header__notification {
-}
-.header__profile {
+    &__text {
+        font-size: 14px;
+        font-weight: bold;
+
+        background: linear-gradient(-71deg, #D128A1, #FF6600);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 }
 .profile {
     position: relative;
@@ -167,7 +153,6 @@
     width: 10px;
     height: 10px;
 
-    /* border: 2px solid var(--color-border-profile); */
     border: 2px solid #ffffff;
     background-image: linear-gradient(-33deg, #D128A1, #FF6600);
     border-radius: 50%;
@@ -176,17 +161,15 @@
     max-width: 180px;
     min-width: max-content;
 }
-.header__btn-theme {
-}
 .btn-theme {
-}
-.btn-theme__svg {
-    display: block;
-}
-.btn-theme__svg svg {
-    max-width: 20px;
-    max-height: 20px;
-}
-.btn-theme__svg g {
-    fill: var(--color-btn-theme-svg);
+    &__svg {
+        display: block;
+    }
+    &__svg svg {
+        max-width: 20px;
+        max-height: 20px;
+    }
+    &__svg g {
+        fill: var(--color-btn-theme-svg);
+    }
 }

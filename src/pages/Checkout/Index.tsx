@@ -88,7 +88,6 @@ export default function Index({ theme='light' }) {
         const allInputEmpty = currentRoutes.every(route => !route.inputValue.trim());
 
         if (allInputEmpty) {
-            // Обнуляем distanceToNext во всех маршрутах
             const clearedRoutes = currentRoutes.map(route => ({
                 ...route,
                 distanceToNext: undefined
