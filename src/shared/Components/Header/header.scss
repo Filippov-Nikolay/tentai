@@ -5,11 +5,13 @@
     --color-placeholder: #D2D5D4;
     --color-text-input: #000000;
     --color-border-profile: #ffffff;
+    --color-btn-theme-svg: #212121;
 }
 .dark {
     --bg-color-header: #202020;
     --color-text-input: #ffffff;
     --color-border-profile: #202020;
+    --color-btn-theme-svg: #ffffff;
 }
 
 .header {
@@ -53,6 +55,8 @@
 
     padding: 10px 16px;
 
+    min-width: max-content;
+    
     color: var(--color-categories);
 }
 .btn-categories__svg {
@@ -65,7 +69,7 @@
     font-weight: bold;
 }
 .header__search {
-    max-width: 473px;
+    max-width: 450px;
     width: 100%;
 }
 .search-form {
@@ -130,6 +134,8 @@
     display: flex;
     align-items: center;
     gap: 5px;
+
+    min-width: max-content;
 }
 .prizes__svg {
 }
@@ -169,4 +175,18 @@
 .header__btn-offer {
     max-width: 180px;
     min-width: max-content;
+}
+.header__btn-theme {
+}
+.btn-theme {
+}
+.btn-theme__svg {
+    display: block;
+}
+.btn-theme__svg svg {
+    max-width: 20px;
+    max-height: 20px;
+}
+.btn-theme__svg g {
+    fill: var(--color-btn-theme-svg);
 }

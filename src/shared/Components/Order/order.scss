@@ -63,6 +63,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 4px;
 }
 .order__right-item-top {
 }
@@ -151,6 +152,11 @@
     font-weight: 600;
 }
 
+.order__contact-info {
+    display: none;
+    
+    margin-top: 24px;
+}
 
 .order__list {
     display: flex;

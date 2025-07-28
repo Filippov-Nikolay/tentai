@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import './header.scss';
 import './adaptive.scss';
@@ -9,7 +9,7 @@ import avatar from '../../assets/img/avatar.jpg'
 import { 
     AllCategoriesSVG, SearchSVG, PresentSVG, 
     MessagesSVG, NotificationSVG, PlusSVG,
-    HexagonPolygonSVG 
+    HexagonPolygonSVG, ThemeIconSVG
 } from '../../assets/svg/svgComponents';
 
 // COMPONENTS
@@ -20,14 +20,21 @@ import PrimaryBtn from '../PrimaryBtn/PrimaryBtn';
 type HeaderProps = {
     value?: boolean;
     theme?: 'light' | 'dark';
+    onThemeChange?: (theme: 'light' | 'dark') => void;
     onChange?: () => void;
 }
 
 export default function Header({ 
     value = false,
     theme = 'light', 
-    onChange
+    onChange,
+    onThemeChange
 }: HeaderProps) {
+    const handleClickThemeChange = () => {
+        const newTheme = theme === 'dark' ? 'dark' : 'light';
+        onThemeChange?.(newTheme);
+    }
+
     return (
         <header className={`header ${theme}`}>
             <div className='container'>
@@ -61,7 +68,6 @@ export default function Header({
                             onClick={ onChange }
                         />
                     </div>
-                    
                     <div className={`header__right-bar ${value ? "header__right-bar--active" : ""}`}>
                         <div className="header__prizes">
                             <a href="#" className="prizes">
@@ -74,13 +80,13 @@ export default function Header({
                         <div className="header__notification">
                             <Notification
                                 icon={ <MessagesSVG/> }
-                                number={ 99 }
+                                number={ 50 }
                             />
                         </div>
                         <div className="header__notification">
                             <Notification
                                 icon={ <NotificationSVG/> }
-                                number={ 99 }
+                                number={ 100 }
                             />
                         </div>
                         <div className="header__profile">
@@ -95,6 +101,11 @@ export default function Header({
                                 iconSvg={ <PlusSVG/> }
                                 text={ "Add offer" }
                             />
+                        </div>
+                        <div className="header__btn-theme">
+                            <button className='btn-theme' onClick={handleClickThemeChange}>
+                                <span className="btn-theme__svg">{<ThemeIconSVG/>}</span>
+                            </button>
                         </div>
                     </div>
                 </div>

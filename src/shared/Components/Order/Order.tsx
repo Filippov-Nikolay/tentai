@@ -26,6 +26,8 @@ type OrderProps = {
     nameFirstPoint?: string;
     nameLastPoint?: string;
 
+    component?: React.ReactNode;
+
     loadingAndUploadingPrice?: number;
     forwardingService?: number;
     payment?: number;
@@ -50,6 +52,8 @@ export default function Order({
     lastPoint = "",
     nameFirstPoint = "",
     nameLastPoint = "",
+
+    component,
 
     loadingAndUploadingPrice = 0,
     forwardingService = 0,
@@ -106,6 +110,11 @@ export default function Order({
                     </li>
                 </ul>
             </div>
+            {component && 
+                <div className="order__contact-info">
+                        {component}
+                </div>
+            }
             <div className="order__list">
                 {prices.map(({ label, value }) => (
                 <div className="order__list-item" key={label}>

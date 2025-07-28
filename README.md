@@ -10,16 +10,19 @@
 2. Установите все зависимости:
     npm install
 
-3. Установите пакет для работы с Sass:
-    npm install sass
-
-4. Зарегистрируйтесь на сайте OpenRouteService и получите API ключ
+5. Зарегистрируйтесь на сайте OpenRouteService и получите API ключ
     (сайт: https://openrouteservice.org/),
     (страница API: https://account.heigit.org/manage/key)
 
-5. Создайте файл .env в корне проекта и добавьте в него ваш ключ:
-    REACT_APP_API_KEY_ROUTE=ваш_ключ_от_OpenRouteService
+6. Создайте файл .env в корне проекта и добавьте в него ваш ключ:
+    REACT_APP_API_KEY_ROUTE = "ваш_ключ_от_OpenRouteService"
 
-6. Запустите проект:
+7. Запустите проект:
     npm start
+```
 
+--- 
+
+# Описание (уточнения):
+    - При изменении маршрутов (Route), данные сохраняются в localStorage с задержкой 500 мс (используется debounce для снижения количества запросов к API).
+    - В правом блоке заказа (RightBar/Order) отображаются только первая и последняя точки маршрута из списка Route.

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import './styles/main.scss';
 import './styles/adaptive.scss';
@@ -39,6 +39,9 @@ import { calculateDistances } from './services/apiService'
 // ICONS
 import { CalendarSVG, ArrowSVG, WalletSVG } from '../../shared/assets/svg/svgComponents';
 
+// TOGGLE THEME
+import { ThemeContext } from '../../App';
+
 export default function Index({ theme='light' }) {
     // API
     const ORS_API_KEY = process.env.REACT_APP_API_KEY_ROUTE;
@@ -49,7 +52,8 @@ export default function Index({ theme='light' }) {
     const forwardingServiceRate = 0.2;  /* 20% экспедиторские услуги от стоимости пути */
 
     // THEME
-    const currentTheme = theme === 'dark' ? 'dark' : 'light';
+    const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+    const currentTheme = isDarkMode ? 'dark' : 'light';
 
     const[firstPoint, setFirstPoint] = useState('');
     const[nameFirstPoint, setNameFirstPoint] = useState('');
@@ -139,11 +143,6 @@ export default function Index({ theme='light' }) {
     }, [currentRoutes.map(route => route.inputValue).join('||')], 500);
 
     useDebounce(() => {
-        // const allFilled = currentRoutes.every(route => 
-        //     route.hoursValue > 0
-        // );
-        // if (!allFilled) { return };
-
         const total = currentRoutes.reduce((sum, item) => 
             sum + (item.distanceToNext || 0), 0
         );
@@ -286,9 +285,10 @@ export default function Index({ theme='light' }) {
     return (
         <>
             <Header 
+                value={ isOpen }
                 theme={ currentTheme }
                 onChange={ toggleMenu }
-                value={ isOpen }
+                onThemeChange={ toggleTheme }
             />
             {isOpen && <div className="backdrop" onClick={() => setIsOpen(false)} />}
             <div className="container">
@@ -450,6 +450,15 @@ export default function Index({ theme='light' }) {
                                             lastPoint={ lastPoint }
                                             nameFirstPoint={ nameFirstPoint }
                                             nameLastPoint={ nameLastPoint }
+
+                                            component = {
+                                                <ContactInfo
+                                                    contact={ contact } 
+                                                    setContact={ setContact }
+                                                    onEditChange={ setIsEdit }
+                                                    isEditDef={ false }
+                                                />
+                                            }
 
                                             loadingAndUploadingPrice={ loadingCost }
                                             payment={ distanceCost }

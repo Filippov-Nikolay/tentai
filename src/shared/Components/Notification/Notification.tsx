@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import './notification.scss';
 import './adaptive.scss';
@@ -17,7 +17,7 @@ export default function Notification({
     return (
         <button className="notification" onClick={ onClick }>
             <div className="notification__svg">{ icon }</div>
-            {number == 0 && 
+            {number !== 0 && 
                 <div className="notification__number">
                     { number > 99 ? "99+" : number}
                 </div>
