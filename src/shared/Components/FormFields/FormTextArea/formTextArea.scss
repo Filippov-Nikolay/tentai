@@ -30,6 +30,9 @@
     border-radius: 8px;
 
     background-color: var(--bg-text-area);
+
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 .form-text-area__wrapper-count-character {
     display: flex;

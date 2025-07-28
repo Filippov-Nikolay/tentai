@@ -108,7 +108,8 @@ export default function Order({
                     </li>
                     <li className="order__point-list-item">
                         <span className="order__point">Point { lastPoint }</span>
-                        <span className="order__path">{ nameLastPoint && `${nameLastPoint}, ${timeArrival} PM` }</span>
+                        {/* <span className="order__path">{ nameLastPoint && `${nameLastPoint}, ${timeArrival} PM` }</span> */}
+                        <span className="order__path">{ nameLastPoint }{timeArrival && `, ${timeArrival} PM`}</span>
                     </li>
                 </ul>
             </div>

@@ -46,6 +46,7 @@ export default function Index({ theme='light' }) {
     // API
     const ORS_API_KEY = process.env.REACT_APP_API_KEY_ROUTE;
 
+    // FOR CALCULATIONS
     const costPerKm = 10;               /* стоимость за 1 км */;
     const costPerHourLoading = 100;     /* стоимость времени работы (загрузка/разгрузка) за 1 час */
     const commissionRate = 0.3;         /* 30% комиссия */
@@ -132,21 +133,21 @@ export default function Index({ theme='light' }) {
         setNameFirstPoint(first.inputValue || '');
         setLastPoint(last.point || '');
         setNameLastPoint(last.inputValue || '');
-    }, [currentRoutes], 500);
+    }, [currentRoutes], 0);
 
 
     useDebounce(() => {
         if (!isAllRoutesFilled()) { return; }
 
         calculateDistances(currentRoutes, setCurrentRoutes, String(ORS_API_KEY));
-    }, [currentRoutes.map(route => route.inputValue).join('||')], 500);
+    }, [currentRoutes.map(route => route.inputValue).join('||')], 200);
 
     useDebounce(() => {
         const total = currentRoutes.reduce((sum, item) => 
             sum + (item.distanceToNext || 0), 0
         );
         setTotalDistanceKm(Number(total.toFixed(2)));
-    }, [currentRoutes.map(route => route.distanceToNext).join('||')], 500);
+    }, [currentRoutes.map(route => route.distanceToNext).join('||')], 0);
 
     // ABOUT
     const[dateOfUpload, setDateOfUpload] = usePersistentState('dateOfUpload', '');
@@ -240,7 +241,8 @@ export default function Index({ theme='light' }) {
             !contact.fullName?.trim() ||
             contact.email.length === 0 ||
             contact.phoneNumber.length === 0 ||
-            !allFilled
+            !allFilled || isInvalid || isTimeInvalid
+
         ) {
             setIsDisabledSubmit(true);
         } else {
@@ -449,7 +451,7 @@ export default function Index({ theme='light' }) {
                                             lastPoint={ lastPoint }
                                             nameFirstPoint={ nameFirstPoint }
                                             nameLastPoint={ nameLastPoint }
-                                            timeArrival={timeOfArrival}
+                                            timeArrival={ !isTimeInvalid ? timeOfArrival : '' }
 
                                             component = {
                                                 <ContactInfo

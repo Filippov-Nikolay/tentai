@@ -1,7 +1,7 @@
 // Validation to check the correctness of the time
 export const validateTime = (val: string): boolean => {
     if (val === '') return true;
-    const timeRegex = /^([01]?\d|2[0-3]):([0-5]?\d)$/;
+    const timeRegex = /^(0\d|1\d|2[0-3]):([0-5]\d)$/;
     return timeRegex.test(val);
 };
 
